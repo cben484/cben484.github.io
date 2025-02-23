@@ -7,7 +7,7 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>Alfred Ben</copyright>
-        <lastBuildDate>Sun, 23 Feb 2025 16:32:56 +0800</lastBuildDate><atom:link href="https://cben484.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Sun, 23 Feb 2025 16:34:09 +0800</lastBuildDate><atom:link href="https://cben484.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>Newnewnew</title>
         <link>https://cben484.github.io/p/newnewnew/</link>
         <pubDate>Sun, 23 Feb 2025 14:44:20 +0800</pubDate>
@@ -23,6 +23,309 @@
         <guid>https://cben484.github.io/p/mytest-test/</guid>
         <description>&lt;h3 id=&#34;动态部署&#34;&gt;动态部署
 &lt;/h3&gt;</description>
+        </item>
+        <item>
+        <title>C&#43;&#43;基础</title>
+        <link>https://cben484.github.io/post/c-basics-qofmn.html</link>
+        <pubDate>Sat, 22 Feb 2025 20:10:23 +0800</pubDate>
+        
+        <guid>https://cben484.github.io/post/c-basics-qofmn.html</guid>
+        <description>&lt;h1 id=&#34;c基础&#34;&gt;C++基础
+&lt;/h1&gt;&lt;h2 id=&#34;什么是c&#34;&gt;什么是C++
+&lt;/h2&gt;&lt;p&gt;how about the C++（&lt;u&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.tiobe.com/tiobe-index/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://www.tiobe.com/tiobe-index/&lt;/a&gt;&lt;/u&gt;）&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;C++是C语言的拓展：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;继承了C语言的特性，关注性能&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;与底层硬件紧密结合&lt;/p&gt;
+&lt;p&gt;示例：存储整形数据是用大端法（高位在前）还是小端法（低位在前），是由硬件决定的，C++标准不做规定；JAVA对此有规定，对存储格式的统一化有代价，但是程序的移植很方便。这是易用性和性能上的取舍。&lt;/p&gt;
+&lt;p&gt;​&lt;img src=&#34;https://cben484.github.io/assets/image-20250221202718-0r7vrql.png&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image&#34;
+	
+	
+&gt;​&lt;/p&gt;
+&lt;p&gt;​&lt;img src=&#34;https://cben484.github.io/assets/image-20250221203117-hn164hn.png&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image&#34;
+	
+	
+&gt;​&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;对象声明周期的精确控制&lt;/p&gt;
+&lt;p&gt;示例：C#中对象的销毁是自动的，有相应的线程和机制进行处理；C++中，对象的构造、使用、销毁都是程序员控制。这是易用性和性能上的取舍。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Zero-Overhead &lt;sup&gt;(开销的意思，ptx中见过，但是我此时忘了)&lt;/sup&gt;Abstraction&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;不需要为没有使用的语言特性付出成本&lt;/p&gt;
+&lt;p&gt;示例：C++中的虚函数，没使用这个特性就没有相应的运行成本；C#中所有的对象基本都是Object的派生，类里定义的函数都是虚函数，即使不使用该特性，也需要付出成本&lt;/p&gt;
+&lt;p&gt;示例：C++在堆上开辟内存（使用指针，间接引用）以及在栈上开辟内存（直接使用）；C#很多类不支持在栈上直接构造&lt;/p&gt;
+&lt;p&gt;​&lt;img src=&#34;https://cben484.github.io/assets/image-20250221205205-vpwswsm.png&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image&#34;
+	
+	
+&gt;​&lt;/p&gt;
+&lt;p&gt;这个示例中，&lt;del&gt;call operator new就会分配堆内存&lt;/del&gt;，好像不太对，operator new好像只是对应于new的汇编，而不是operator new就分配堆内存。我感觉作者的意思只是单纯的想告诉你分配到堆和分配到栈是不一样的&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;使用一些语言特性不等于付出运行成本。&lt;/p&gt;
+&lt;p&gt;示例：使用consteval关键字。代码复杂，但结果固定，在编译时直接完成计算（减少了运行时的负担，付出了编译成本）。&lt;/p&gt;
+&lt;p&gt;​&lt;img src=&#34;https://cben484.github.io/assets/image-20250221211211-spkgyaw.png&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image&#34;
+	
+	
+&gt;​&lt;/p&gt;
+&lt;p&gt;这里的汇编mov eax,3表示在编译时就算出了结果，可以减少运行时的负担，但是相应的也会增加编译的成本&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;input disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; 引入大量特性，便于工程实践&lt;sup&gt;（需要单独开一个章节来了解一下）&lt;/sup&gt;&lt;/p&gt;
+&lt;div class=&#34;siyuan-plugin-task-date-info-wrapper&#34; contenteditable=&#34;false&#34; data-type=&#34;siyuan-plugin-custom-wrapper&#34; style=&#34;position: absolute; top: 0px; right: 0px; left: 0px; pointer-events: none !important;&#34;&gt;&lt;div class=&#34;siyuan-plugin-task-date-info&#34; contenteditable=&#34;false&#34; data-editable=&#34;false&#34; spellcheck=&#34;false&#34; data-type=&#34;siyuan-plugin-custom-date-info&#34; style=&#34;position: absolute; font-size: 10px; color: rgb(136, 136, 136); text-align: right; right: 20px; top: -12px; pointer-events: none !important; user-select: none !important;&#34;&gt;完成时间: 2025-02-22&lt;/div&gt;&lt;/div&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;三种编程范式：面向过程、面向对象、泛型&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;函数重载、异常处理、引用&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;C++是一系列不断衍化的标准集合：&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;C++98/03, C++1, C++14, C++17, C++20, C++23?&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;input disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; 语言本身一直在改进&lt;sup&gt;（同样的需要单独开一个章节来了解）&lt;/sup&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Memory Model&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Lambda Expression&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;input disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; 标准库的改进&lt;sup&gt;（同样的需要单独开一个章节来了解）&lt;/sup&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;type_traits  / ranges&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;auto_ptr&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;C++标准的工业实现：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;MSVC / GCC / Clang &amp;hellip;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;每个编译器可能并不完全遵循标准&lt;/p&gt;
+&lt;p&gt;示例： clang 10.0.1和clang 11.0.1 对同一段程序的编译结果不同。clang10.0.1没有遵循新版本C++标准对consteval关键字的规定。&lt;/p&gt;
+&lt;p&gt;​&lt;img src=&#34;https://cben484.github.io/assets/image-20250221212201-rjs0071.png&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image&#34;
+	
+	
+&gt;​&lt;/p&gt;
+&lt;p&gt;确实是，他这个汇编里面没有能够直接看到计算结果（4）&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;不同的实现存在差异&lt;/p&gt;
+&lt;p&gt;示例：C++标准没有明确规定的细节，gcc 10.2和clang 11.0.1的实现不同。二者对模版的别名的处理不同。&lt;/p&gt;
+&lt;p&gt;​&lt;img src=&#34;https://cben484.github.io/assets/image-20250222183942-8jzhb93.png&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image&#34;
+	
+	
+&gt;​&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;总结：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;对C++的讨论不能脱离语境：标准版本、编译工具、开发平台、硬件环境等&lt;/li&gt;
+&lt;li&gt;C++更多应用于强调性能的环境&lt;sup&gt;（C++强调性能，意味着它能够让开发者在需要的时候直接与硬件交互、管理内存并优化计算，特别是在性能要求极高的应用场景中，C++能够提供其他高级语言无法匹敌的高效运行速度。 感觉对应的是前面讲的堆栈）&lt;/sup&gt;&lt;/li&gt;
+&lt;li&gt;编程时应该遵循标准。例如，多线程的实现可以使用Windows或Linux的线程库，但更建议使用C++标准库&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;c开发环境与相关工具&#34;&gt;C++开发环境与相关工具
+&lt;/h2&gt;&lt;p&gt;开发环境：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Visual C++，GCC（G++），Clang（Clang++）&amp;hellip;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;集成开发环境：Visual Studio，CodeLite，Code::blocks，Eclipse&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;工具：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;usr/bin/time:Linux下，查看程序运行使用的时间的工具&lt;/p&gt;
+&lt;p&gt;示例：看sleep 1 这个指令使用的时间&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-c++&#34; data-lang=&#34;c++&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;usr&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;bin&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;time&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;sleep&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;valgrind：Linux下，检查程序内存泄漏情况的工具&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;cpp reference：C++百科全书&lt;sup&gt;（https://en.cppreference.com/w/）&lt;/sup&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Compiler explorer：在线编译（到汇编）和运行C++程序，可以选择不同编译器&lt;sup&gt;（https://godbolt.org/）&lt;/sup&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;C++ insights：对代码进行等价的解释&lt;sup&gt;（https://cppinsights.io/）&lt;/sup&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;c的编译链接模型&#34;&gt;C++的编译/链接模型
+&lt;/h2&gt;&lt;p&gt;简单的加工模型无法处理大型程序：这样的方式加工耗时长，同时每做少量修改都需要全部重新加工。&lt;/p&gt;
+&lt;p&gt;​&lt;img src=&#34;https://cben484.github.io/assets/image-20250222191139-ns0jhqa.png&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image&#34;
+	
+	
+&gt;​&lt;/p&gt;
+&lt;p&gt;分块处理：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;编译更耗资源，但一次处理输入较少&lt;/li&gt;
+&lt;li&gt;链接输入较多，但链接本身的处理速度较快&lt;/li&gt;
+&lt;li&gt;便于程序修改升级&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;​&lt;img src=&#34;https://cben484.github.io/assets/image-20250222191232-gkgas0x.png&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image&#34;
+	
+	
+&gt;​&lt;/p&gt;
+&lt;p&gt;分块处理的衍生：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;定义/声明&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;头文件/源文件&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;翻译文件=源文件+相关头文件（直接或间接）-应忽略的预处理语句。间接引用头文件被称为头文件的展开。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;一处定义原则&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;程序级：一般函数&lt;/li&gt;
+&lt;li&gt;翻译单元级：内联函数、类、模版&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;编译/链接过程：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;预处理：头文件（.h）+源文件（.cpp）→翻译单元（.i）&lt;/p&gt;
+&lt;p&gt;防止头文件重复展开：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;#ifdef解决方案：定义宏&lt;/li&gt;
+&lt;li&gt;#pragma once 解决方案：对展开进行计数，只会展开一次&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;编译：翻译单元（.i）→汇编代码（.s）&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;编译优化：将复杂程序进行等价的简化。编译优化本身会对代码进行修改，因此无法设置断点，不利于调试。&lt;/p&gt;
+&lt;p&gt;​&lt;img src=&#34;https://cben484.github.io/assets/image-20250222193308-y1l1p83.png&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image&#34;
+	
+	
+&gt;​&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;增量汇编 v.s. 全部汇编&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;汇编：汇编代码（.i）→目标文件（机器码）（.o）&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;链接：多个目标文件（.o）→可执行程序，Linux下可以用nm命令查看所有链接&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;合并多个目标文件，关联声明与定义&lt;/li&gt;
+&lt;li&gt;链接（Linkage）种类：内部链接、外部链接、无连接&lt;/li&gt;
+&lt;li&gt;常见错误：找不到定义（undefined reference）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;​&lt;img src=&#34;https://cben484.github.io/assets/image-20250222193557-dn7u6h9.png&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image&#34;
+	
+	
+&gt;​&lt;/p&gt;
+&lt;hr&gt;
+</description>
         </item>
         <item>
         <title>常识总结</title>
