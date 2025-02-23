@@ -7,7 +7,7 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>Alfred Ben</copyright>
-        <lastBuildDate>Sun, 23 Feb 2025 14:44:20 +0800</lastBuildDate><atom:link href="https://cben484.github.io/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Sun, 23 Feb 2025 16:32:56 +0800</lastBuildDate><atom:link href="https://cben484.github.io/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>Newnewnew</title>
         <link>https://cben484.github.io/p/newnewnew/</link>
         <pubDate>Sun, 23 Feb 2025 14:44:20 +0800</pubDate>
@@ -23,6 +23,32 @@
         <guid>https://cben484.github.io/p/mytest-test/</guid>
         <description>&lt;h3 id=&#34;动态部署&#34;&gt;动态部署
 &lt;/h3&gt;</description>
+        </item>
+        <item>
+        <title>常识总结</title>
+        <link>https://cben484.github.io/post/summary-of-common-sense-8czg.html</link>
+        <pubDate>Fri, 21 Feb 2025 10:09:25 +0800</pubDate>
+        
+        <guid>https://cben484.github.io/post/summary-of-common-sense-8czg.html</guid>
+        <description>&lt;h1 id=&#34;常识总结&#34;&gt;常识总结
+&lt;/h1&gt;&lt;h2 id=&#34;最优化问题optimization-problem&#34;&gt;最优化问题（Optimization problem）
+&lt;/h2&gt;&lt;p&gt;数学、工程学、计算机科学和经济学领域中，最优化问题，或称优化问题（Optimization problem）是指从所有可行解中找到最优良的解的问题。&lt;/p&gt;
+&lt;p&gt;根据变量是连续的或离散的，可将最优化问题分为两类：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;具有离散变量的最优化问题称为&lt;strong&gt;离散优化&lt;/strong&gt;，其中必须找到&lt;strong&gt;可数集合&lt;/strong&gt;中的整数排列或图等对象。&lt;/li&gt;
+&lt;li&gt;具有连续变量的最优化问题称为&lt;strong&gt;连续优化&lt;/strong&gt;，其中必须找到&lt;strong&gt;连续函数&lt;/strong&gt;的最优值。它们可以包括约束问题和多模态问题&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;最优化问题和决定性问题&lt;sup&gt;（在可计算性理论与计算复杂性理论中，决定性问题，亦称判定问题，（英语：Decision problem）是一个在某些形式系统回答“是”或“否”的问题。）&lt;/sup&gt;、功能性问题&lt;sup&gt;（在计算复杂性理论内，函数问题（英语：Function problem）或者功能性问题是一种计算问题，对任何一种输入都预期会有单一个输出，但是输出不像是决定性问题一样这么单纯。换句话说，输出不只是或否，比决策问题复杂得多。重要的范例像是旅行推销员问题，询问一张图是否有可以绕过每一点的不重复路径（输出为路径），以及整数分解，输出为输入的质因数。）&lt;/sup&gt;不同，最优化问题是：从问题的多个解中，求出最佳解。像背包问题（考虑不同价格和重量的物品，以及可承载一定重量的背包，如何选择物品，使背包中的物品的总价最高）即属于最优化问题。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;内点法interior-point-method&#34;&gt;内点法（Interior point method）
+&lt;/h2&gt;&lt;p&gt;内点法（也称为障碍法或IPM）是用于解决线性和非线性凸优化问题的算法。IPM结合了先前已知算法的两个优点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;从理论上将，它们的运行时间是多项式的——与单纯形法相反，后者在最坏情况下的运行时间是指数的&lt;sup&gt;（内点法具有多项式时间复杂度，即随着问题的规模增加，算法的运行时间按多项式的速度增长。这是一个很重要的优点，因为它意味着在理论上，算法的运行时间不会增长得过快，适合解决大规模问题。 虽然单纯形法在最坏情况下的时间复杂度是指数级的（这意味着在某些特定的情况下，单纯形法的运行时间会非常长，可能会增长到非常大的数值。因此，单纯形法在理论上不如内点法稳定），但是在实际应用中，单纯形法往往能非常高效率地解决大多数问题，其速度与内点法差不多。也就是说，尽管单纯形法在最坏情况下表现得不如内点法，但在实际使用中，单纯形法也能很快地找到解。）&lt;/sup&gt;。&lt;/li&gt;
+&lt;li&gt;实际上，他们的运行速度和单纯形法一样快&lt;sup&gt;（但是在实际应用中，单纯形法往往能非常高效率地解决大多数问题，其速度与内点法差不多。也就是说，尽管单纯形法在最坏情况下表现得不如内点法，但在实际使用中，单纯形法也能很快地找到解。）&lt;/sup&gt;，而椭圆体法则相反，虽然它在理论上具有多项式运行时间，但在实践中却非常慢&lt;sup&gt;（虽然椭圆体法的理论时间复杂度是多项式的，但在实际应用中，它往往非常慢。尽管它在理论上具备多项式时间复杂度，但实际上在很多情况下，椭圆体法的效率较低，运行时间长。）&lt;/sup&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;与​&lt;strong&gt;遍历可行域边界&lt;/strong&gt;​的​&lt;strong&gt;单纯形法&lt;/strong&gt;​和​&lt;strong&gt;从外部限制可行域&lt;/strong&gt;​的​&lt;strong&gt;椭圆体法&lt;/strong&gt;​相比，IPM 通过​&lt;strong&gt;遍历可行域内部&lt;/strong&gt;​*来&lt;sup&gt;（可行域是指所有满足约束条件的解的集合。可行域是一个包含所有合法解的区域，这些解不仅符合问题的目标函数，而且还满足问题中给定的约束条件  单纯形法：通过遍历可行域的边界来寻找最优解。单纯形法总是从一个可行解开始，沿着可行域的边界走，逐步改进目标函数的值，直到找到最优解 椭圆体法：通过外部逐渐逼近可行域的边界来找到最优解 内点法（IPM）：内点法通过在可行域的内部进行搜索，逐渐逼近最优解。因此，它与单纯性法和椭圆体法的不同之处在于它不沿着边界寻找解，而是探索可行域的内部。）&lt;/sup&gt;*​达到最佳解决方案- 由此得名。&lt;sup&gt;(可行域是指所有满足约束条件的解的集合。可行域是一个包含所有合法解的区域，这些解不仅符合问题的目标函数，而且还满足问题中给定的约束条件  单纯形法：通过遍历可行域的边界来寻找最优解。单纯形法总是从一个可行解开始，沿着可行域的边界走，逐步改进目标函数的值，直到找到最优解 椭圆体法：通过外部逐渐逼近可行域的边界来找到最优解 内点法（IPM）：内点法通过在可行域的内部进行搜索，逐渐逼近最优解。因此，它与单纯性法和椭圆体法的不同之处在于它不沿着边界寻找解，而是探索可行域的内部。)&lt;/sup&gt;&lt;/p&gt;
+&lt;p&gt;‍&lt;/p&gt;
+</description>
         </item>
         <item>
         <title>Chinese Test</title>
