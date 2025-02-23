@@ -7,7 +7,7 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>Alfred Ben</copyright>
-        <lastBuildDate>Sun, 23 Feb 2025 18:17:35 +0800</lastBuildDate><atom:link href="https://cben484.github.io/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Sun, 23 Feb 2025 18:56:19 +0800</lastBuildDate><atom:link href="https://cben484.github.io/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>上传测试</title>
         <link>https://cben484.github.io/post/upload-test-1t5c3h.html</link>
         <pubDate>Sun, 23 Feb 2025 18:09:40 +0800</pubDate>
@@ -72,6 +72,39 @@
 &lt;/ul&gt;
 &lt;p&gt;与​&lt;strong&gt;遍历可行域边界&lt;/strong&gt;​的​&lt;strong&gt;单纯形法&lt;/strong&gt;​和​&lt;strong&gt;从外部限制可行域&lt;/strong&gt;​的​&lt;strong&gt;椭圆体法&lt;/strong&gt;​相比，IPM 通过​&lt;strong&gt;遍历可行域内部&lt;/strong&gt;​*来&lt;sup&gt;（可行域是指所有满足约束条件的解的集合。可行域是一个包含所有合法解的区域，这些解不仅符合问题的目标函数，而且还满足问题中给定的约束条件  单纯形法：通过遍历可行域的边界来寻找最优解。单纯形法总是从一个可行解开始，沿着可行域的边界走，逐步改进目标函数的值，直到找到最优解 椭圆体法：通过外部逐渐逼近可行域的边界来找到最优解 内点法（IPM）：内点法通过在可行域的内部进行搜索，逐渐逼近最优解。因此，它与单纯性法和椭圆体法的不同之处在于它不沿着边界寻找解，而是探索可行域的内部。）&lt;/sup&gt;*​达到最佳解决方案- 由此得名。&lt;sup&gt;(可行域是指所有满足约束条件的解的集合。可行域是一个包含所有合法解的区域，这些解不仅符合问题的目标函数，而且还满足问题中给定的约束条件  单纯形法：通过遍历可行域的边界来寻找最优解。单纯形法总是从一个可行解开始，沿着可行域的边界走，逐步改进目标函数的值，直到找到最优解 椭圆体法：通过外部逐渐逼近可行域的边界来找到最优解 内点法（IPM）：内点法通过在可行域的内部进行搜索，逐渐逼近最优解。因此，它与单纯性法和椭圆体法的不同之处在于它不沿着边界寻找解，而是探索可行域的内部。)&lt;/sup&gt;&lt;/p&gt;
 &lt;p&gt;‍&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>TIPS</title>
+        <link>https://cben484.github.io/post/tips-z1wp3rc.html</link>
+        <pubDate>Sun, 16 Feb 2025 14:01:55 +0800</pubDate>
+        
+        <guid>https://cben484.github.io/post/tips-z1wp3rc.html</guid>
+        <description>&lt;h1 id=&#34;tips&#34;&gt;TIPS
+&lt;/h1&gt;&lt;hr&gt;
+&lt;h2 id=&#34;sharedmem-capability&#34;&gt;&lt;strong&gt;SharedMem Capability&lt;/strong&gt;
+&lt;/h2&gt;&lt;p&gt;&lt;em&gt;&lt;u&gt;The amount of the unified data cache reserved for shared memory is configurable on a per kernel basis.&lt;/u&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Volta&lt;/strong&gt;(&lt;em&gt;&lt;u&gt;compute capability 7.0&lt;/u&gt;&lt;/em&gt;),the unified data cache has a size of &lt;strong&gt;128KB,&lt;/strong&gt; and the shared memory capacity can be set to &lt;strong&gt;0,8,16,32,64 or 96KB.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Turing&lt;/strong&gt;(&lt;u&gt;&lt;em&gt;compute capability 7.5&lt;/em&gt;&lt;/u&gt;),the unified data cache has a size of &lt;strong&gt;96KB,&lt;/strong&gt; and the shared memory capacity can be set to either &lt;strong&gt;32KB&lt;/strong&gt; or &lt;strong&gt;64KB.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Ampere&lt;/strong&gt;(&lt;em&gt;&lt;u&gt;compute capability 8.0 and 8.7&lt;/u&gt;&lt;/em&gt;),the unified data cache has a size of &lt;strong&gt;192KB,&lt;/strong&gt; and  the shared memory capacity can be set to &lt;strong&gt;0,8,16,32,64,100,132 or 164KB.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;(&lt;em&gt;&lt;u&gt;compute capability 8.6 and 8.9&lt;/u&gt;&lt;/em&gt;),the unified data cache has a size of &lt;strong&gt;128KB&lt;/strong&gt;,and the shared memory capacity can be set &lt;strong&gt;0,8,16,32,64 or 100KB.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Hopper&lt;/strong&gt;(&lt;u&gt;&lt;em&gt;compute capability 9.0&lt;/em&gt;&lt;/u&gt;),the unified data cache has a size of 256KB,and the shared memory capacity can be set &lt;strong&gt;0,8,16,32,64,100,132,164,196 or 228KB.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;‍&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;sharedmem&#34;&gt;&lt;strong&gt;SharedMem&lt;/strong&gt;
+&lt;/h2&gt;&lt;p&gt;&lt;em&gt;&lt;u&gt;Kernels relying on shared memory allocations over 48 KB per block are architecture-specific, and must use dynamic shared memory rather than statically sized shared memory arrays.These kernels require an explicit opt-in by using&lt;/u&gt;&lt;/em&gt;  &lt;em&gt;&lt;u&gt;​&lt;code&gt;cudaFuncSetAttribute()&lt;/code&gt;​&lt;/u&gt;&lt;/em&gt;   &lt;em&gt;&lt;u&gt;to set the&lt;/u&gt;&lt;/em&gt;  &lt;em&gt;&lt;u&gt;​&lt;code&gt;cudaFuncAttributeMaxDynamicSharedMemorySize&lt;/code&gt;​&lt;/u&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;‍&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;u&gt;Note that the maximum amount of shared memory per thread block is smaller than the maximum shared memory partition available per SM. The 1 KB of shared memory not made available to a thread block is reserved for system use.(always smaller 1KB than partition at least for system)&lt;/u&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;‍&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;ptx&#34;&gt;&lt;span data-type=&#34;text&#34; style=&#34;background-color: var(--b3-font-background4);&#34;&gt;PTX&lt;/span&gt;
+&lt;/h2&gt;&lt;p&gt;Coorperative thread arrays (CTAs) implement CUDA thread blocks and clusters implement CUDA thread block clusteres.&lt;/p&gt;
+&lt;p&gt;All instruction keywords are reserved tokens in PTX.&lt;/p&gt;
+&lt;p&gt;All variables reside in some state space.&lt;/p&gt;
+&lt;p&gt;All whitespace characters are equivalent; whitespace is ignored except for its use in separating tokens in the language.&lt;/p&gt;
+&lt;p&gt;Comments in PTX are treated as whitespace.&lt;/p&gt;
+&lt;p&gt;In principle, all variables (aside from predicates) could be declared using only bit-size types, but typed variables enhance program readability and allow for better operand type checking.&lt;/p&gt;
+&lt;p&gt;The bit-size type is compatible with any fundamental type having the same size.&lt;/p&gt;
 </description>
         </item>
         <item>
