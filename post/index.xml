@@ -7,7 +7,7 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>Alfred Ben</copyright>
-        <lastBuildDate>Sun, 23 Feb 2025 18:56:19 +0800</lastBuildDate><atom:link href="https://cben484.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Sun, 23 Feb 2025 20:00:02 +0800</lastBuildDate><atom:link href="https://cben484.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>上传测试</title>
         <link>https://cben484.github.io/post/upload-test-1t5c3h.html</link>
         <pubDate>Sun, 23 Feb 2025 18:09:40 +0800</pubDate>
@@ -105,6 +105,954 @@
 &lt;p&gt;Comments in PTX are treated as whitespace.&lt;/p&gt;
 &lt;p&gt;In principle, all variables (aside from predicates) could be declared using only bit-size types, but typed variables enhance program readability and allow for better operand type checking.&lt;/p&gt;
 &lt;p&gt;The bit-size type is compatible with any fundamental type having the same size.&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>PTX（Parallel Thread Execution）</title>
+        <link>https://cben484.github.io/post/ptx-parallel-thread-execution-2wylyv.html</link>
+        <pubDate>Fri, 13 Dec 2024 11:48:28 +0800</pubDate>
+        
+        <guid>https://cben484.github.io/post/ptx-parallel-thread-execution-2wylyv.html</guid>
+        <description>&lt;h1 id=&#34;ptxparallel-thread-execution&#34;&gt;PTX（Parallel Thread Execution）
+&lt;/h1&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-gdscript3&#34; data-lang=&#34;gdscript3&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;__device__&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;__forceinline__&lt;/span&gt; &lt;span class=&#34;ne&#34;&gt;int&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;load_int_from_global&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;ne&#34;&gt;int&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;*&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;ne&#34;&gt;int&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;r&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;asm&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;volatile&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;ld.global.cs.s32 %0, [%1];&amp;#34;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;=r&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;r&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;l&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;));&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;r&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;DASP/src/dasp_f16.h中的例子，用了ptx指令&lt;/p&gt;
+&lt;p&gt;‍&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;这个代码总体的意思是，根据输入的参数a，a是一个指向全局内存数据的指针，&lt;/p&gt;
+&lt;p&gt;通过调用ptx指令，将这个数据直接存入到寄存器中用了操作数约束&amp;quot;=r(r)&amp;ldquo;将r与寄存器相绑定，所以ptx将数据放入寄存器的时候，r就已经有值了&lt;/p&gt;
+&lt;p&gt;此时再返回r，就完成了这个load from global的操作了&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;ld.global.cs.s32：ld.global表示从全局内存中加载数据，cs(cache streaming)表示缓存策略，优化一次性加载数据的性能。s32表示加载的数据类型是32位有符号数。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;asm是assembly（汇编）的缩写，用于在高层语言（C++或CUDA）中插入底层汇编代码，在CUDA中，用于嵌入PTX汇编指令。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;volatile是一个修饰符，表示汇编指令可能被修改，防止编译器优化或重新排序&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;asm和volatile组合表示，确保嵌入的汇编代码在任何优化情况下都被执行。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;‍&lt;/p&gt;
+&lt;p&gt;这里的=r是约束修饰符，将r变量约束到寄存器上，绑定到寄存器上&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;寄存器约束，=r(r)，r被分配到一个寄存器&lt;/p&gt;
+&lt;p&gt;PTX指令会将全局内存中加载的值存储到这个寄存器&lt;/p&gt;
+&lt;p&gt;有等号和没有等号是有区别的，=表示输出操作数，该变量的值将在汇编执行后被更新，没有=表示输入操作数，该变量的值在汇编指令中作为只读数据，不会被修改。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;例子：asm volatile(&amp;#34;ld.global.cs.u32 %0, [%1];&amp;#34; : &amp;#34;=r&amp;#34;(r) : &amp;#34;l&amp;#34;(a));
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;内存约束，m，PTX指令将寄存器中的值存储到output指定的内存地址&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;例子：asm volatile(&amp;#34;st.global.u32 [%0], %1;&amp;#34; : : &amp;#34;m&amp;#34;(output), &amp;#34;r&amp;#34;(value));
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;立即数约束，i，表示变量需要绑定到一个立即数（常量），PTX 指令将执行按位左移操作。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;例子：asm volatile(&amp;#34;shl.b32 %0, %1, %2;&amp;#34; : &amp;#34;=r&amp;#34;(result) : &amp;#34;r&amp;#34;(value), &amp;#34;i&amp;#34;(shift));
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;‍&lt;/p&gt;
+&lt;p&gt;在以下两个例子中，出现了有单个冒号和双冒号的情况，多了解了一下：&lt;/p&gt;
+&lt;p&gt;这个冒号实质上是用于分隔输出操作数和输入操作数的，前者为输出操作数，后者为输入操作数，在第二例子中，函数实现的功能是store操作，是void没有输出，所以没有输出操作数，自然就形成了两个冒号了。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-gdscript3&#34; data-lang=&#34;gdscript3&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;__device__&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;__forceinline__&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;half&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;load_half_from_global&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;half&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;*&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;ushort&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;r&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;asm&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;volatile&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;ld.global.cs.u16 %0, [%1];&amp;#34;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;=h&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;r&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;l&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;));&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;half&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;r_half&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;reinterpret_cast&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;half&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&amp;gt;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;r&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;r_half&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-gdscript3&#34; data-lang=&#34;gdscript3&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;__device__&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;__forceinline__&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;void&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;store_half_to_global&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;half&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;*&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;half&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;v&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;ushort&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;v_u&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;reinterpret_cast&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ushort&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&amp;gt;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;v&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;asm&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;volatile&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;st.global.cs.u16 [%0], %1;&amp;#34;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;::&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;l&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;),&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;h&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;v_u&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;));&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;‍&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&#34;ptx-introduction&#34;&gt;&lt;span data-type=&#34;text&#34; style=&#34;background-color: var(--b3-font-background4);&#34;&gt;PTX Introduction&lt;/span&gt;
+&lt;/h1&gt;&lt;p&gt;&lt;em&gt;PTX&lt;/em&gt;​ defines a virtual machine and ISA for general purpose parallel thread execution. PTX programs are translated at install time to the target hardware instruction set. The PTX-to-GPU translator and driver enable NVIDIA GPUs to &lt;sup&gt;(ptx提供了一个虚拟机和指令集架构，PTX到GPU的编译器和驱动使得英伟达GPU能够作为可编程的并行计算机使用)&lt;/sup&gt;​be used as programmable parallel computers.&lt;sup&gt;(ptx提供了一个虚拟机和指令集架构，PTX到GPU的编译器和驱动使得英伟达GPU能够作为可编程的并行计算机使用)&lt;/sup&gt;&lt;/p&gt;
+&lt;p&gt;‍&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&#34;ptx-programming-model&#34;&gt;&lt;span data-type=&#34;text&#34; style=&#34;background-color: var(--b3-font-background4);&#34;&gt;PTX Programming Model&lt;/span&gt;
+&lt;/h1&gt;&lt;h2 id=&#34;1a-highly-multithreaded-coprocessor&#34;&gt;1.A Highly Multithreaded Coprocessor
+&lt;/h2&gt;&lt;p&gt;The GPU is a compute device capable of executing a very large number of threads in parallel. It operates as a coprocessor to the main CPU, or host: In other words, data-parallel, compute-intensive portions of applications running on the host are off-loaded onto the device.&lt;/p&gt;
+&lt;p&gt;More precisely, a portion of an application that is executed many times, but independently on different data, can be isolated into a kernel function that is executed on the GPU as many different threads. To that effect, such a function is compiled to the PTX instruction set and the resulting kernel is translated at install time to the target GPU instruction set.&lt;/p&gt;
+&lt;h2 id=&#34;2thread-hierarchyptx的线程层次结构和cuda的不一样cuda里面叫做block这里叫做cta真是服了&#34;&gt;2.Thread Hierarchy&lt;sup&gt;(ptx的线程层次结构和cuda的不一样，cuda里面叫做block，这里叫做CTA（真是服了）)&lt;/sup&gt;
+&lt;/h2&gt;&lt;p&gt;The batch of threads that executes a kernel is organized as a grid. A grid consists of either cooperative thread arrays or clusters of cooperative thread arrays as described in this section and illustrated in &lt;a class=&#34;link&#34; href=&#34;https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#grid-of-clusters-grid-with-ctas&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Figure 1&lt;/a&gt; and &lt;a class=&#34;link&#34; href=&#34;https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#grid-of-clusters-grid-with-clusters&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Figure 2&lt;/a&gt;. *Cooperative thread arrays (CTAs)&lt;sup&gt;(所以可以直接将CTA视为block，clusters视为block clusters是吧)&lt;/sup&gt;*​ implement CUDA thread blocks and clusters implement CUDA thread block clusters.&lt;sup&gt;(所以可以直接将CTA视为block，clusters视为block clusters是吧)&lt;/sup&gt;&lt;/p&gt;
+&lt;h3 id=&#34;21-cooperative-thread-arrays&#34;&gt;2.1 Cooperative Thread Arrays
+&lt;/h3&gt;&lt;p&gt;The &lt;em&gt;Parallel Thread Execution (PTX)&lt;/em&gt;  programming model is explicitly parallel: a PTX program specifies the execution of a given thread of a parallel thread array. A &lt;em&gt;cooperative thread array&lt;/em&gt;, or CTA, is an array of threads that execute a kernel concurrently or in parallel.&lt;/p&gt;
+&lt;p&gt;Threads within a CTA can communicate with each other. To coordinate the communication of the threads within the CTA, one can specify synchronization points where threads wait until all threads in the CTA have arrived.&lt;sup&gt;(指出，为了协调CTA内部线程的通信，可以指定同步点。 指明了同步的作用之一是为了CTA内部线程的通信。)&lt;/sup&gt;&lt;/p&gt;
+&lt;p&gt;Each thread has a unique thread identifier within the CTA. Programs use a data parallel decomposition to partition inputs, work, and results across the threads of the CTA. Each CTA thread uses its thread identifier to determine its assigned role, assign specific input and output positions, compute addresses, and select work to perform.&lt;sup&gt;(程序员通过线程标识符，即tid，来控制CTA线程的行为 )&lt;/sup&gt; The thread identifier is a three-element vector &lt;code&gt;tid&lt;/code&gt;​, (with elements &lt;code&gt;tid.x&lt;/code&gt;​, &lt;code&gt;tid.y&lt;/code&gt;​, and &lt;code&gt;tid.z&lt;/code&gt;​) that specifies the thread’s position within a 1D, 2D, or 3D CTA. Each thread identifier component ranges from zero up to the number of thread ids in that CTA dimension.&lt;/p&gt;
+&lt;p&gt;Each CTA has a 1D, 2D, or 3D shape specified by a three-element vector ​ntid​ (with elements ​ntid.x​, ​ntid.y​, and ​ntid.z​). &lt;sup&gt;(ntid指定了CTA的shape )&lt;/sup&gt;The vector &lt;code&gt;ntid&lt;/code&gt;​ specifies the number of threads in each CTA dimension.&lt;/p&gt;
+&lt;p&gt;Threads within a CTA execute in SIMT (single-instruction, multiple-thread) fashion in groups called ​&lt;em&gt;warps&lt;/em&gt;​.&lt;sup&gt;(这句话明确说了，warp里面的线程的执行方式就是SIMT)&lt;/sup&gt; A &lt;em&gt;warp&lt;/em&gt; is a maximal subset of threads from a single CTA, such that the threads execute the same instructions at the same time. Threads within a warp are sequentially numbered. The warp size is a machine-dependent constant. Typically, a warp has 32 threads. &lt;sup&gt;(他这样说的，感觉warp的大小有可能随着未来的发展而变化)&lt;/sup&gt;Some applications may be able to maximize performance with knowledge of the warp size, so PTX includes a run-time immediate constant, &lt;code&gt;WARP_SZ&lt;/code&gt;​, which may be used in any instruction where an immediate operand is allowed.&lt;/p&gt;
+&lt;h3 id=&#34;22-cluster-of-cooperative-thread-arrays有block就有block-cluster有cta就有cta-cluster&#34;&gt;2.2 Cluster of Cooperative Thread Arrays&lt;sup&gt;(有block就有block cluster，有CTA就有CTA cluster)&lt;/sup&gt;
+&lt;/h3&gt;&lt;p&gt;Cluster is a group of CTAs that run concurrently or in parallel and can synchronize and communicate with each other via shared memory. The executing CTA has to make sure that the shared memory of the peer CTA exists before communicating with it via shared memory and the peer CTA hasn’t exited before completing the shared memory operation.&lt;/p&gt;
+&lt;p&gt;Threads within the different CTAs in a cluster can synchronize and communicate with each other via shared memory. Cluster-wide barriers can be used to synchronize all the threads within the cluster. Each CTA in a cluster has a unique CTA identifier within its cluster  &lt;em&gt;&lt;em&gt;(&lt;strong&gt;​&lt;/strong&gt;&lt;/em&gt;cluster_ctaid&lt;/em&gt;&lt;strong&gt;​ &lt;strong&gt;)&lt;/strong&gt; . Each cluster of CTAs has 1D, 2D or 3D shape specified by the parameter &lt;em&gt;cluster_nctaid&lt;/em&gt;. Each CTA in the cluster also has a unique CTA identifier  &lt;em&gt;&lt;em&gt;(&lt;strong&gt;​&lt;/strong&gt;&lt;/em&gt;cluster_ctarank&lt;/em&gt;&lt;/strong&gt;​ &lt;strong&gt;)&lt;/strong&gt;  across all dimensions. The total number of CTAs across all the dimensions in the cluster is specified by &lt;em&gt;&lt;strong&gt;cluster_nctarank&lt;/strong&gt;&lt;/em&gt;. Threads may read and use these values through &lt;u&gt;predefined, read-only special registers &lt;/u&gt;​&lt;u&gt;​&lt;code&gt;%cluster_ctaid&lt;/code&gt;​&lt;/u&gt;​&lt;u&gt;, &lt;/u&gt;​&lt;u&gt;​&lt;code&gt;%cluster_nctaid&lt;/code&gt;​&lt;/u&gt;​&lt;u&gt;, &lt;/u&gt;​&lt;u&gt;​&lt;code&gt;%cluster_ctarank&lt;/code&gt;​&lt;/u&gt;​&lt;u&gt;, &lt;/u&gt;​&lt;u&gt;​&lt;code&gt;%cluster_nctarank&lt;/code&gt;​&lt;/u&gt;​.&lt;/p&gt;
+&lt;p&gt;Cluster level is applicable only on target architecture &lt;code&gt;sm_90&lt;/code&gt;​ or higher. Specifying cluster level during launch time is optional. If the user specifies the cluster dimensions at launch time then it will be treated as explicit cluster launch, otherwise it will be treated as implicit cluster launch with default dimension 1x1x1. PTX provides read-only special register &lt;code&gt;%is_explicit_cluster&lt;/code&gt;​ to differentiate between explicit and implicit cluster launch.&lt;/p&gt;
+&lt;h3 id=&#34;23-grid-of-clusters有block就有grid他这里写的是grid-of-clusters&#34;&gt;2.3 Grid of Clusters&lt;sup&gt;(有block就有grid，他这里写的是grid of clusters)&lt;/sup&gt;
+&lt;/h3&gt;&lt;p&gt;There is a maximum number of threads that a CTA can contain and a maximum number of CTAs that a cluster can contain. However, clusters with CTAs that execute the same kernel can be batched together into a grid of clusters, so that the total number of threads that can be launched in a single kernel invocation is very large. &lt;sup&gt;(处理相同内核的CTA可以批处理到一起，形成一个集群网络，从而使得单次内核调用中可启动的总线程数非常大)&lt;/sup&gt;​This comes at the expense of reduced thread communication and synchronization, because threads in different clusters cannot communicate and synchronize with each other.&lt;sup&gt;(只有集群内部的线程才是可以通信和同步的，集群之间无法做到，所以集群网络形成的条件是以减少线程间通信和同步为代价的)&lt;/sup&gt;&lt;/p&gt;
+&lt;p&gt;Each cluster has a unique cluster identifier (&lt;em&gt;&lt;strong&gt;clusterid&lt;/strong&gt;&lt;/em&gt;) within a grid of clusters. Each grid of clusters has a 1D, 2D , or 3D shape specified by the parameter &lt;em&gt;&lt;strong&gt;nclusterid&lt;/strong&gt;&lt;/em&gt;. Each grid also has a unique temporal grid identifier (&lt;em&gt;&lt;strong&gt;gridid&lt;/strong&gt;&lt;/em&gt;). Threads may read and use these values through &lt;u&gt;predefined, read-only special registers &lt;/u&gt;​&lt;u&gt;​&lt;code&gt;%tid&lt;/code&gt;​&lt;/u&gt;​&lt;u&gt;, &lt;/u&gt;​&lt;u&gt;​&lt;code&gt;%ntid&lt;/code&gt;​&lt;/u&gt;​&lt;u&gt;, &lt;/u&gt;​&lt;u&gt;​&lt;code&gt;%clusterid&lt;/code&gt;​&lt;/u&gt;​&lt;u&gt;, &lt;/u&gt;​&lt;u&gt;​&lt;code&gt;%nclusterid&lt;/code&gt;​&lt;/u&gt;​&lt;u&gt;, and &lt;/u&gt;​&lt;u&gt;​&lt;code&gt;%gridid&lt;/code&gt;​&lt;/u&gt;​.&lt;/p&gt;
+&lt;p&gt;Each CTA has a unique identifier (&lt;em&gt;&lt;strong&gt;ctaid&lt;/strong&gt;&lt;/em&gt;) within a grid. Each grid of CTAs has 1D, 2D, or 3D shape specified by the parameter &lt;em&gt;&lt;strong&gt;nctaid&lt;/strong&gt;&lt;/em&gt;. Thread may use and read these values through &lt;u&gt;predefined, read-only special registers &lt;/u&gt;​&lt;u&gt;​&lt;code&gt;%ctaid&lt;/code&gt;​&lt;/u&gt;​&lt;u&gt; and &lt;/u&gt;​&lt;u&gt;​&lt;code&gt;%nctaid&lt;/code&gt;​&lt;/u&gt;​.&lt;/p&gt;
+&lt;p&gt;Each kernel is executed as a batch of threads organized as a grid of clusters consisting of CTAs where cluster is optional level and is applicable only for target architectures &lt;code&gt;sm_90&lt;/code&gt;​ and higher. &lt;a class=&#34;link&#34; href=&#34;https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#grid-of-clusters-grid-with-ctas&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Figure 1&lt;/a&gt; shows a grid consisting of CTAs and &lt;a class=&#34;link&#34; href=&#34;https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#grid-of-clusters-grid-with-clusters&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Figure 2&lt;/a&gt; shows a grid consisting of clusters.&lt;/p&gt;
+&lt;p&gt;Grids may be launched with dependencies between one another - a grid may be a dependent grid and/or a prerequisite grid. To understand how grid dependencies may be defined, refer to the section on ​&lt;em&gt;CUDA Graphs&lt;/em&gt;​ in the ​*Cuda Programming Guide&lt;sup&gt;(这样一看，似乎可以起不止一个grid)&lt;/sup&gt;*​.&lt;sup&gt;(这样一看，似乎可以起不止一个grid)&lt;/sup&gt;&lt;/p&gt;
+&lt;h2 id=&#34;3-memory-hierarchy累了明天再看这个&#34;&gt;3. Memory Hierarchy&lt;sup&gt;(累了，明天再看这个)&lt;/sup&gt;
+&lt;/h2&gt;&lt;p&gt;PTX threads may access data from multiple state spaces during their execution as illustrated by &lt;a class=&#34;link&#34; href=&#34;https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#memory-hierarchy-memory-hierarchy-with-clusters&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Figure 3&lt;/a&gt; where cluster level is introduced from target architecture &lt;code&gt;sm_90&lt;/code&gt;​ onwards. Each thread has a private local memory. Each thread block (CTA) has a shared memory visible to all threads of the block and to all active blocks in the cluster and with the same lifetime as the block. Finally, all threads have access to the same global memory.&lt;/p&gt;
+&lt;p&gt;There are additional state spaces accessible by all threads: the constant, param, texture, and surface state spaces. Constant and texture memory are read-only; surface memory is readable and writable. The global, constant, param, texture, and surface state spaces are optimized for different memory usages. For example, texture memory offers different addressing modes as well as data filtering for specific data formats. Note that texture and surface memory is cached, and within the same kernel call, the cache is not kept coherent with respect to global memory writes and surface memory writes, so any texture fetch or surface read to an address that has been written to via a global or a surface write in the same kernel call returns undefined data. In other words, a thread can safely read some texture or surface memory location only if this memory location has been updated by a previous kernel call or memory copy, but not if it has been previously updated by the same thread or another thread from the same kernel call.&lt;/p&gt;
+&lt;p&gt;The global, constant, and texture state spaces are persistent across kernel launches by the same application.&lt;/p&gt;
+&lt;p&gt;Both the host and the device maintain their own local memory, referred to as &lt;em&gt;host memory&lt;/em&gt; and &lt;em&gt;device memory&lt;/em&gt;, respectively. The device memory may be mapped and read or written by the host, or, for more efficient transfer, copied from the host memory through optimized API calls that utilize the device’s high-performance &lt;em&gt;Direct Memory Access (DMA)&lt;/em&gt;  engine.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&#34;ptx-syntax&#34;&gt;&lt;span data-type=&#34;text&#34; style=&#34;background-color: var(--b3-font-background4);&#34;&gt;PTX Syntax&lt;/span&gt;
+&lt;/h1&gt;&lt;p&gt;PTX programs are a collection of text source modules (files). PTX source modules have an   &lt;strong&gt;&lt;u&gt;&lt;/u&gt;&lt;/strong&gt;   &lt;strong&gt;&lt;u&gt;assembly-language style&lt;sup&gt;(汇编风格 )&lt;/sup&gt;&lt;/strong&gt;&lt;/u&gt; syntax with instruction &lt;em&gt;&lt;strong&gt;operation codes&lt;/strong&gt;&lt;/em&gt; and &lt;em&gt;&lt;strong&gt;operands&lt;/strong&gt;&lt;/em&gt;. Pseudo-operations specify symbol and addressing management. &lt;strong&gt;The ptxas optimizing backend compiler&lt;sup&gt;(ptxas后端优化编译器，整体是一个名词，这个编译器优化并汇编了PTX源模块来生成对应的二进制对象文件（我估计就是sass）)&lt;/sup&gt;&lt;/strong&gt; optimizes and assembles PTX source modules to produce corresponding binary object files.&lt;/p&gt;
+&lt;h2 id=&#34;1source-format&#34;&gt;1.Source Format
+&lt;/h2&gt;&lt;p&gt;Source modules are ASCII text. Lines are separated by the newline character &lt;sup&gt;(换行符 )&lt;/sup&gt;(&lt;code&gt;\n&lt;/code&gt;​).&lt;/p&gt;
+&lt;p&gt;All whitespace characters are equivalent; whitespace is ignored except for its use in separating tokens in the language.&lt;sup&gt;(所有空白符是等效的，空白符只在分隔语言中的标记时起作用。)&lt;/sup&gt;&lt;/p&gt;
+&lt;p&gt;The C preprocessor cpp&lt;sup&gt;(这里的cpp应该指的是C preprocessor，pp是来自于preprocessor)&lt;/sup&gt; may be used to process PTX source modules. Lines beginning with &lt;code&gt;#&lt;/code&gt;​ are preprocessor directives&lt;sup&gt;(directives好像是指令的意思，在ptx里面似乎特指那些预处理指令，在4.3里面有提到directive or instruction，说明这俩是有区分的，在4.3在细说区分)&lt;/sup&gt;. The following are common preprocessor directives:&lt;/p&gt;
+&lt;p&gt;​&lt;code&gt;#include&lt;/code&gt;​, &lt;code&gt;#define&lt;/code&gt;​, &lt;code&gt;#if&lt;/code&gt;​, &lt;code&gt;#ifdef&lt;/code&gt;​, &lt;code&gt;#else&lt;/code&gt;​, &lt;code&gt;#endif&lt;/code&gt;​, &lt;code&gt;#line&lt;/code&gt;​, &lt;code&gt;#file&lt;/code&gt;​&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;C: A Reference Manual&lt;/em&gt; by Harbison and Steele provides a good description of the C preprocessor.&lt;/p&gt;
+&lt;p&gt;PTX is case sensitive and uses lowercase for keywords.&lt;sup&gt;(ptx大小写敏感，关键字都是小写)&lt;/sup&gt;&lt;/p&gt;
+&lt;p&gt;Each PTX module must begin with a ​.version​ directive specifying the PTX language version, followed by a ​.target​ directive specifying the target architecture assumed.&lt;sup&gt;(每个ptx模块都是由.version开头，指定ptx版本，后面跟一个.target指明目标架构)&lt;/sup&gt; See &lt;a class=&#34;link&#34; href=&#34;https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#ptx-module-directives&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;PTX Module Directives&lt;/a&gt; for a more information on these directives.&lt;/p&gt;
+&lt;h2 id=&#34;2commentsptx的注释规则和ccpp基本上是一样的不一样的点勾画出来了&#34;&gt;2.Comments&lt;sup&gt;(ptx的注释规则，和C/CPP基本上是一样的，不一样的点勾画出来了)&lt;/sup&gt;
+&lt;/h2&gt;&lt;p&gt;Comments in PTX follow C/C++ syntax, using non-nested &lt;code&gt;/*&lt;/code&gt;​ and &lt;code&gt;*/&lt;/code&gt;​ for comments that may span multiple lines, and using &lt;code&gt;//&lt;/code&gt;​ to begin a comment that extends up to the next newline character, which terminates the current line.  &lt;u&gt;&lt;strong&gt;Comments cannot occur within character constants, string literals, or within other comments.&lt;/strong&gt;&lt;/u&gt;&lt;/p&gt;
+&lt;p&gt;Comments in PTX are treated as whitespace.&lt;/p&gt;
+&lt;h2 id=&#34;3statements语句&#34;&gt;3.Statements&lt;sup&gt;(语句)&lt;/sup&gt;
+&lt;/h2&gt;&lt;p&gt;A PTX statement is either a directive or an instruction.&lt;sup&gt;(这里对directive和instruction做了一个区分 1. Directive（指令） 定义：Directive 是 PTX 代码中的预处理指令，它告诉编译器如何处理代码，或者定义一些编译时的设置。Directive 本身不执行任何计算，它们通常用于设定数据、寄存器等的属性，或者控制代码生成的过程。 作用：它们通常用于定义变量、注册信息、内存空间等设置。例如，定义寄存器、全局内存、共享内存等。 常见的 PTX directive 示例： .reg：用于定义寄存器。 .global：用于定义全局内存。 .shared：用于定义共享内存。 .const：用于定义常量内存。 示例：  .reg .b32 r1, r2;  // 定义32位的寄存器r1和r2 .global .f32 array[N];  // 定义一个名为array的全局浮点数组  2. Instruction（指令） 定义：Instruction 是 PTX 中的计算或操作指令，它执行具体的操作或计算任务。指令是程序实际执行的代码，涉及算术运算、内存访问、控制流等。 作用：它们执行各种类型的操作，如加载/存储、算术计算、控制流指令（跳转、条件判断）等。 常见的 PTX instruction 示例： mov：移动数据。 add：加法运算。 ld.global：全局内存加载。 shl：按位左移。 示例：  mov.b32 r1, %tid.x;  // 将线程ID的x部分存入寄存器r1 add.f32 r2, r2, 0.5; // 将寄存器r2的值加上0.5 shl.b32 r1, r1, 2;   // 将寄存器r1的值左移2位  主要区别： Directive 是编译时的指令，主要用于设置或声明变量、寄存器、内存等，它们并不执行实际的计算。 Instruction 是执行时的指令，它们执行具体的计算任务或内存操作，是程序执行的核心部分。 总结来说，directive 主要负责代码的配置和声明，而 instruction 则是实际的操作指令，控制程序的计算过程。)&lt;/sup&gt; Statements begin with an optional label&lt;sup&gt;(以可选的标签开头)&lt;/sup&gt; and end with a semicolon.&lt;sup&gt;(以分号结尾 )&lt;/sup&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Examples&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        .reg     .b32 r1, r2;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        .global  .f32  array[N];
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;start:  mov.b32   r1, %tid.x;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        shl.b32   r1, r1, 2;          // shift thread id by 2 bits
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        ld.global.b32 r2, array[r1];  // thread[tid] gets array[tid]
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        add.f32   r2, r2, 0.5;        // add 1/2
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id=&#34;31-directive-statements&#34;&gt;3.1 Directive Statements
+&lt;/h3&gt;&lt;p&gt;Directive keywords begin with a dot, so no conflict is possible with user-defined identifiers. The directives in PTX are listed in &lt;a class=&#34;link&#34; href=&#34;https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#directive-statements-ptx-directives&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Table 1&lt;/a&gt; and described in &lt;a class=&#34;link&#34; href=&#34;https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#state-spaces-types-and-variables&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;State Spaces, Types, and Variables&lt;/a&gt; and &lt;a class=&#34;link&#34; href=&#34;https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#directives&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Directives&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;​&lt;img src=&#34;http://127.0.0.1:3622/assets/image-20250217211249-rpbipdu.png&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image&#34;
+	
+	
+&gt;​&lt;/p&gt;
+&lt;h3 id=&#34;32-instruction-statements操作码操作数操作数以逗号分隔以分号结束&#34;&gt;3.2 Instruction Statements&lt;sup&gt;(操作码+操作数（操作数以逗号分隔，以分号结束）)&lt;/sup&gt;
+&lt;/h3&gt;&lt;p&gt;Instructions are formed from an instruction opcode followed by a comma-separated&lt;sup&gt;(以逗号分隔)&lt;/sup&gt; list of zero or more operands, and terminated with a semicolon&lt;sup&gt;(以分号结尾)&lt;/sup&gt;. Operands may be register variables, constant expressions, address expressions, or label names. Instructions have an optional guard predicate which controls conditional execution. The guard predicate follows the optional label and precedes the opcode, and is written as &lt;code&gt;@p&lt;/code&gt;​, where &lt;code&gt;p&lt;/code&gt;​ is a predicate register. The guard predicate may be optionally negated, written as &lt;code&gt;@!p&lt;/code&gt;​.&lt;/p&gt;
+&lt;p&gt;The destination operand is first, followed by source operands.&lt;/p&gt;
+&lt;p&gt;Instruction keywords are listed in &lt;a class=&#34;link&#34; href=&#34;https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#instruction-statements-reserved-instruction-keywords-new&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Table 2&lt;/a&gt;. All instruction keywords are reserved tokens in PTX&lt;sup&gt;(太长了，我没截下来，ctrl点Table2就可以看到了)&lt;/sup&gt;.&lt;/p&gt;
+&lt;h2 id=&#34;4identifiers标识符&#34;&gt;4.Identifiers&lt;sup&gt;(标识符)&lt;/sup&gt;
+&lt;/h2&gt;&lt;p&gt;User-defined identifiers follow extended C++ rules: they either start with a letter followed by zero or more letters, digits, underscore, or dollar characters; or they start with an underscore, dollar, or percentage character followed by one or more letters, digits, underscore, or dollar characters:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;followsym:   [a-zA-Z0-9_$]
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;identifier:  [a-zA-Z]{followsym}* | {[_$%]{followsym}+
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;PTX does not specify a maximum length for identifiers and suggests that all implementations support a minimum length of at least 1024 characters.&lt;/p&gt;
+&lt;p&gt;Many high-level languages such as C and C++ follow similar rules for identifier names, except that the percentage sign is not allowed. PTX allows the percentage sign as the first character of an identifier. The percentage sign can be used to avoid name conflicts, e.g., between user-defined variable names and compiler-generated names.&lt;/p&gt;
+&lt;p&gt;PTX predefines one constant and a small number of special registers that begin with the percentage sign&lt;sup&gt;(PTX以百分号开头预定义了一些特殊寄存器)&lt;/sup&gt;, listed in &lt;a class=&#34;link&#34; href=&#34;https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#identifiers-predefined-identifiers&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Table 3&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;​&lt;img src=&#34;http://127.0.0.1:3622/assets/image-20250218100058-0hk4byx.png&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image&#34;
+	
+	
+&gt;​&lt;/p&gt;
+&lt;h2 id=&#34;5constants&#34;&gt;5.Constants
+&lt;/h2&gt;&lt;p&gt;PTX supports integer and floating-point constants and constant expressions. These constants may be used in data initialization and as operands to instructions. Type checking rules remain the same for integer, floating-point, and bit-size types. For predicate-type data and instructions, integer constants are allowed and are interpreted as in C, i.e., zero values are &lt;code&gt;False&lt;/code&gt;​ and non-zero values are &lt;code&gt;True&lt;/code&gt;​.&lt;/p&gt;
+&lt;h3 id=&#34;51-integer-constants&#34;&gt;5.1 Integer Constants
+&lt;/h3&gt;&lt;p&gt;Integer constants are 64-bits in size and are either signed or unsigned, i.e., every integer constant has type &lt;code&gt;.s64&lt;/code&gt;​ or &lt;code&gt;.u64&lt;/code&gt;​. The signed/unsigned nature of an integer constant is needed to correctly evaluate constant expressions containing operations such as division and ordered comparisons, where the behavior of the operation depends on the operand types. When used in an instruction or data initialization, each integer constant is converted to the appropriate size based on the data or instruction type at its use.&lt;/p&gt;
+&lt;p&gt;Integer literals may be written in decimal, hexadecimal, octal, or binary&lt;sup&gt;(十进制、十六进制、八进制或二进制)&lt;/sup&gt; notation. The syntax follows that of C. Integer literals may be followed immediately by the letter &lt;code&gt;U&lt;/code&gt;​ to indicate that the literal is unsigned.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;hexadecimal literal:  0[xX]{hexdigit}+U?
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;octal literal:        0{octal digit}+U?
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;binary literal:       0[bB]{bit}+U?
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;decimal literal       {nonzero-digit}{digit}*U?
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Integer literals are non-negative and have a type determined by their magnitude and optional type suffix as follows: literals are signed (&lt;code&gt;.s64&lt;/code&gt;​) unless the value cannot be fully represented in &lt;code&gt;.s64&lt;/code&gt;​ or the unsigned suffix is specified, in which case the literal is unsigned (&lt;code&gt;.u64&lt;/code&gt;​).&lt;/p&gt;
+&lt;p&gt;The predefined integer constant &lt;code&gt;WARP_SZ&lt;/code&gt;​ specifies the number of threads per warp for the target platform; to date, all target architectures have a &lt;code&gt;WARP_SZ&lt;/code&gt;​ value of 32.&lt;/p&gt;
+&lt;h3 id=&#34;52-floating-point-constants&#34;&gt;5.2 Floating-Point Constants
+&lt;/h3&gt;&lt;p&gt;Floating-point constants are represented as 64-bit double-precision values, and all floating-point constant expressions are evaluated using 64-bit double precision arithmetic. The only exception is the 32-bit hex notation for expressing an exact single-precision floating-point value; such values retain their exact 32-bit single-precision value and may not be used in constant expressions. Each 64-bit floating-point constant is converted to the appropriate floating-point size based on the data or instruction type at its use.&lt;/p&gt;
+&lt;p&gt;Floating-point literals may be written with an optional decimal point and an optional signed exponent. Unlike C and C++, there is no suffix letter to specify size; literals are always represented in 64-bit double-precision format.&lt;/p&gt;
+&lt;p&gt;PTX includes a second representation of floating-point constants for specifying the exact machine representation using a hexadecimal constant. To specify IEEE 754 double-precision floating point values, the constant begins with &lt;sup&gt;(双精度浮点数 是0d或者0D开头，后面跟16个16进制 单精度浮点数 是0f或者0F开头，后面跟8个16进制)&lt;/sup&gt;​0d​ or ​0D​ followed by 16 hex digits. To specify IEEE 754 single-precision floating point values, the constant begins with ​0f​ or ​0F&lt;sup&gt;(双精度浮点数 是0d或者0D开头，后面跟16个16进制 单精度浮点数 是0f或者0F开头，后面跟8个8进制)&lt;/sup&gt;​ followed by 8 hex digits.&lt;sup&gt;(双精度浮点数 是0d或者0D开头，后面跟16个16进制 单精度浮点数 是0f或者0F开头，后面跟8个8进制)&lt;/sup&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;0[fF]{hexdigit}{8}      // single-precision floating point
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;0[dD]{hexdigit}{16}     // double-precision floating point
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;Example&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;mov.f32  $f3, 0F3f800000;       //  1.0
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id=&#34;53-predicate-谓词有点陌生的词汇-谓词predicate是一个逻辑或条件判断的术语通常表示一种判断式或条件用于判断某个特定的条件是否成立在编程语言中谓词通常是一个表达式其值为真或假true-或-false-在-ptx-这样的汇编语言中谓词常常用于控制程序的执行流程例如在某些指令的执行上进行条件判断--假设我们有一个简单的条件语句-if-x--5-------执行某些操作--在这里x--5-就是一个谓词它的值是一个布尔值true-或-false如果-x-的值大于-5谓词-x--5-为-true那么就会执行后面的操作如果-x-小于或等于-5谓词为-false操作就不会执行--在-ptx-中的应用-在-ptx-汇编中整数常量可以作为谓词使用具体来说0-被视为-false非零整数比如-1被视为-true例如-setpequ32--p0-r1-0----p0-为-1-时相当于-true表示-r1-是否等于-0-在这里setpequ32-指令比较寄存器-r1-和-0-是否相等如果相等p0-被设置为-1true否则-p0-被设置为-0falsep0-就是一个谓词用来表示条件是否成立constants&#34;&gt;5.3 Predicate &lt;sup&gt;(谓词，有点陌生的词汇。 谓词（Predicate）是一个逻辑或条件判断的术语，通常表示一种“判断式”或“条件”，用于判断某个特定的条件是否成立。在编程语言中，谓词通常是一个表达式，其值为真或假（True 或 False）。 在 PTX 这样的汇编语言中，谓词常常用于控制程序的执行流程，例如在某些指令的执行上进行条件判断。  假设我们有一个简单的条件语句： if (x &amp;gt; 5) {     // 执行某些操作 } 在这里，x &amp;gt; 5 就是一个谓词，它的值是一个布尔值（True 或 False）。如果 x 的值大于 5，谓词 x &amp;gt; 5 为 True，那么就会执行后面的操作；如果 x 小于或等于 5，谓词为 False，操作就不会执行。  在 PTX 中的应用： 在 PTX 汇编中，整数常量可以作为谓词使用。具体来说，0 被视为 False，非零整数（比如 1）被视为 True。例如： setp.eq.u32  p0, r1, 0;   // p0 为 1 时，相当于 True，表示 r1 是否等于 0 在这里，setp.eq.u32 指令比较寄存器 $r1 和 0 是否相等，如果相等，p0 被设置为 1（True），否则 p0 被设置为 0（False）。p0 就是一个谓词，用来表示条件是否成立。)&lt;/sup&gt;Constants
+&lt;/h3&gt;&lt;p&gt;In PTX, integer constants may be used as predicates. For predicate-type data initializers and instruction operands, integer constants are interpreted as in C, i.e., zero values are &lt;code&gt;False&lt;/code&gt;​ and non-zero values are &lt;code&gt;True&lt;/code&gt;​.&lt;/p&gt;
+&lt;h3 id=&#34;54-constant-expressions&#34;&gt;5.4 Constant Expressions
+&lt;/h3&gt;&lt;p&gt;In PTX, constant expressions are formed using operators as in C and are evaluated using rules similar to those in C, but simplified by restricting types and sizes, removing most casts&lt;sup&gt;(类型转换)&lt;/sup&gt;, and defining full semantics&lt;sup&gt;(完整的语义)&lt;/sup&gt; to eliminate cases where expression evaluation in C is implementation dependent.&lt;/p&gt;
+&lt;p&gt;Constant expressions are formed from constant literals, unary plus and minus, basic arithmetic operators (addition, subtraction, multiplication, division), comparison operators, the conditional ternary operator ( &lt;code&gt;?:&lt;/code&gt;​ ), and parentheses. Integer constant expressions also allow unary logical negation (&lt;code&gt;!&lt;/code&gt;​), bitwise complement (&lt;code&gt;~&lt;/code&gt;​), remainder (&lt;code&gt;%&lt;/code&gt;​), shift operators (&lt;code&gt;&amp;lt;&amp;lt;&lt;/code&gt;​ and &lt;code&gt;&amp;gt;&amp;gt;&lt;/code&gt;​), bit-type operators (&lt;code&gt;&amp;amp;&lt;/code&gt;​, &lt;code&gt;|&lt;/code&gt;​, and &lt;code&gt;^&lt;/code&gt;​), and logical operators (&lt;code&gt;&amp;amp;&amp;amp;&lt;/code&gt;​, &lt;code&gt;||&lt;/code&gt;​).&lt;/p&gt;
+&lt;p&gt;Constant expressions in PTX do not support casts between integer and floating-point.&lt;/p&gt;
+&lt;p&gt;Constant expressions are evaluated using the same operator precedence&lt;sup&gt;(运算符优先级)&lt;/sup&gt; as in C. &lt;a class=&#34;link&#34; href=&#34;https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#constant-expressions-operator-precedence&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Table 4&lt;/a&gt; gives operator precedence and associativity. Operator precedence is highest for unary operators&lt;sup&gt;(一元运算符是最高的优先级)&lt;/sup&gt; and decreases with each line in the chart. Operators on the same line have the same precedence and are evaluated right-to-left for unary operators and left-to-right for binary operators.&lt;sup&gt;(对于一元运算符求值顺序是从右到左 对于二元运算符求值顺序是从左到右)&lt;/sup&gt;&lt;/p&gt;
+&lt;p&gt;​&lt;img src=&#34;http://127.0.0.1:3622/assets/image-20250218112505-ba3ao6d.png&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image&#34;
+	
+	
+&gt;​&lt;/p&gt;
+&lt;h3 id=&#34;55-integer-constant-expression-evaluation&#34;&gt;5.5 Integer Constant Expression Evaluation
+&lt;/h3&gt;&lt;p&gt;Integer constant expressions are evaluated at compile time according to a set of rules that determine the type (signed &lt;code&gt;.s64&lt;/code&gt;​ versus unsigned &lt;code&gt;.u64&lt;/code&gt;​) of each sub-expression. These rules are based on the rules in C, but they’ve been simplified to apply only to 64-bit integers, and behavior is fully defined in all cases (specifically, for remainder and shift operators).&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Literals are signed unless unsigned is needed to prevent overflow, or unless the literal uses a &lt;code&gt;U&lt;/code&gt;​ suffix. For example:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;​&lt;code&gt;42&lt;/code&gt;​, &lt;code&gt;0x1234&lt;/code&gt;​, &lt;code&gt;0123&lt;/code&gt;​ are signed.&lt;/li&gt;
+&lt;li&gt;​&lt;code&gt;0xfabc123400000000&lt;/code&gt;​, &lt;code&gt;42U&lt;/code&gt;​, &lt;code&gt;0x1234U&lt;/code&gt;​ are unsigned.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Unary plus and minus preserve the type of the input operand. For example:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;​&lt;code&gt;+123&lt;/code&gt;​, &lt;code&gt;-1&lt;/code&gt;​, &lt;code&gt;-(-42)&lt;/code&gt;​ are signed.&lt;/li&gt;
+&lt;li&gt;​&lt;code&gt;-1U&lt;/code&gt;​, &lt;code&gt;-0xfabc123400000000&lt;/code&gt;​ are unsigned.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Unary logical negation (&lt;code&gt;!&lt;/code&gt;​) produces a signed result with value &lt;code&gt;0&lt;/code&gt;​ or &lt;code&gt;1&lt;/code&gt;​.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Unary bitwise complement (&lt;code&gt;~&lt;/code&gt;​) interprets the source operand as unsigned and produces an unsigned result.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Some binary operators require normalization of source operands. This normalization is known as &lt;em&gt;the usual arithmetic conversions&lt;/em&gt; and simply converts both operands to unsigned type if either operand is unsigned.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Addition, subtraction, multiplication, and division perform the usual arithmetic conversions and produce a result with the same type as the converted operands. That is, the operands and result are unsigned if either source operand is unsigned, and is otherwise signed.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Remainder (&lt;code&gt;%&lt;/code&gt;​) interprets the operands as unsigned. Note that this differs from C, which allows a negative divisor but defines the behavior to be implementation dependent.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Left and right shift interpret the second operand as unsigned and produce a result with the same type as the first operand. Note that the behavior of right-shift is determined by the type of the first operand: right shift of a signed value is arithmetic and preserves the sign, and right shift of an unsigned value is logical and shifts in a zero bit.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;AND (&lt;code&gt;&amp;amp;&lt;/code&gt;​), OR (&lt;code&gt;|&lt;/code&gt;​), and XOR (&lt;code&gt;^&lt;/code&gt;​) perform the usual arithmetic conversions and produce a result with the same type as the converted operands.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;AND_OP (&lt;code&gt;&amp;amp;&amp;amp;&lt;/code&gt;​), OR_OP (&lt;code&gt;||&lt;/code&gt;​), Equal (&lt;code&gt;==&lt;/code&gt;​), and Not_Equal (&lt;code&gt;!=&lt;/code&gt;​) produce a signed result. The result value is 0 or 1.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Ordered comparisons (&lt;code&gt;&amp;lt;&lt;/code&gt;​, &lt;code&gt;&amp;lt;=&lt;/code&gt;​, &lt;code&gt;&amp;gt;&lt;/code&gt;​, &lt;code&gt;&amp;gt;=&lt;/code&gt;​) perform the usual arithmetic conversions on source operands and produce a signed result. The result value is &lt;code&gt;0&lt;/code&gt;​ or &lt;code&gt;1&lt;/code&gt;​.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Casting of expressions to signed or unsigned is supported using (&lt;code&gt;.s64&lt;/code&gt;​) and (&lt;code&gt;.u64&lt;/code&gt;​) casts.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;For the conditional operator ( &lt;code&gt;? :&lt;/code&gt;​ ) , the first operand must be an integer, and the second and third operands are either both integers or both floating-point. The usual arithmetic conversions are performed on the second and third operands, and the result type is the same as the converted type.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;56-summary-of-constant-expression-evaluation-rules&#34;&gt;5.6 Summary of Constant Expression Evaluation Rules
+&lt;/h3&gt;&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#summary-of-constant-expression-evaluation-rules-constant-expression-evaluation-rules&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Table 5&lt;/a&gt; contains a summary &lt;sup&gt;(焯，有这个总结不早说，前面白看那么久)&lt;/sup&gt;of the constant expression evaluation rules.&lt;/p&gt;
+&lt;p&gt;​&lt;img src=&#34;http://127.0.0.1:3622/assets/image-20250218114420-gvqyw33.png&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image&#34;
+	
+	
+&gt;​&lt;/p&gt;
+&lt;p&gt;‍&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&#34;ptx-state-spacestypesand-variables&#34;&gt;&lt;span data-type=&#34;text&#34; style=&#34;background-color: var(--b3-font-background4);&#34;&gt;PTX State Spaces，Types，and Variables&lt;/span&gt;
+&lt;/h1&gt;&lt;p&gt;While the specific resources available in a given target GPU will vary, the kinds of resources will be common across platforms, and these resources are abstracted in PTX through ​**&lt;u&gt;state spaces**&lt;/u&gt;​ and ​**data types&lt;sup&gt;(PTX中通过状态空间和数据类型来抽象资源)&lt;/sup&gt;**​.&lt;sup&gt;(PTX中通过状态空间和数据类型来抽象资源)&lt;/sup&gt;&lt;/p&gt;
+&lt;h2 id=&#34;1-state-spaces&#34;&gt;1. State Spaces
+&lt;/h2&gt;&lt;p&gt;A state space is a storage area with particular characteristics. All variables reside in some state space&lt;sup&gt;(所有的变量都驻留在某一个状态空间里面)&lt;/sup&gt;. The characteristics of a state space include its size, addressability, access speed, access rights, and level of sharing between threads.&lt;sup&gt;(state space（状态空间）的特性)&lt;/sup&gt;&lt;/p&gt;
+&lt;p&gt;The state spaces defined in PTX are a byproduct of parallel programming and graphics programming. The list of state spaces is shown in &lt;a class=&#34;link&#34; href=&#34;https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#state-spaces-state-spaces-tab&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Table 6&lt;/a&gt;,and properties of state spaces are shown in &lt;a class=&#34;link&#34; href=&#34;https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#state-spaces-properties-state-spaces&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Table 7&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;​&lt;img src=&#34;http://127.0.0.1:3622/assets/image-20250218115657-eprgpit.png&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image&#34;
+	
+	
+&gt;​&lt;/p&gt;
+&lt;p&gt;​&lt;img src=&#34;http://127.0.0.1:3622/assets/image-20250218115713-s7q3swh.png&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image&#34;
+	
+	
+&gt;​&lt;/p&gt;
+&lt;h3 id=&#34;11-register-state-space&#34;&gt;1.1 Register State Space
+&lt;/h3&gt;&lt;p&gt;Registers (&lt;code&gt;.reg&lt;/code&gt;​ state space) are fast storage locations. The number of registers is limited, and will vary from platform to platform. When the limit is exceeded, register variables will be spilled to memory, causing changes in performance. For each architecture, there is a recommended maximum number of registers to use (see the &lt;em&gt;CUDA Programming Guide&lt;/em&gt; for details).&lt;/p&gt;
+&lt;p&gt;Registers may be typed (signed integer, unsigned integer, floating point, predicate) or untyped. Register size is restricted; aside from predicate registers which are 1-bit, scalar registers have a width of 8-, 16-, 32-, 64-, or 128-bits, and vector registers have a width of 16-, 32-, 64-, or 128-bits. The most common use of 8-bit registers is with &lt;code&gt;ld&lt;/code&gt;​, &lt;code&gt;st&lt;/code&gt;​, and &lt;code&gt;cvt&lt;/code&gt;​ instructions, or as elements of vector tuples.&lt;/p&gt;
+&lt;p&gt;Registers differ from the other state spaces in that they are not fully addressable&lt;sup&gt;(寄存器状态空间和其他状态空间的不同之处在于它们不可完全寻址)&lt;/sup&gt;, i.e., it is not possible to refer to the address of a register&lt;sup&gt;(不能引用寄存器的地址)&lt;/sup&gt;. When compiling to use the Application Binary Interface (ABI), register variables are restricted to function scope and may not be declared at module scope&lt;sup&gt;(寄存器变量被限制到函数范围中，不能在模块范围中引用)&lt;/sup&gt;. When compiling legacy PTX code (ISA versions prior to 3.0) containing module-scoped &lt;code&gt;.reg&lt;/code&gt;​ variables, the compiler silently disables use of the ABI. Registers may have alignment boundaries&lt;sup&gt;(边界对齐)&lt;/sup&gt; required by multi-word loads and stores.&lt;/p&gt;
+&lt;h3 id=&#34;12-special-register-state-space存了一些预定义的特定平台的寄存器如网格集群cta和线程参数时钟计数器以及性能监控寄存器所有特殊寄存器都是预定义的&#34;&gt;1.2 Special Register State Space&lt;sup&gt;(存了一些预定义的特定平台的寄存器，如网格、集群、CTA和线程参数、时钟计数器以及性能监控寄存器。所有特殊寄存器都是预定义的)&lt;/sup&gt;
+&lt;/h3&gt;&lt;p&gt;The special register (&lt;code&gt;.sreg&lt;/code&gt;​) state space holds predefined, platform-specific registers, such as grid, cluster, CTA, and thread parameters, clock counters, and performance monitoring registers. All special registers are predefined.&lt;/p&gt;
+&lt;h3 id=&#34;13-constant-state-space&#34;&gt;1.3 Constant State Space
+&lt;/h3&gt;&lt;p&gt;The constant (​.const​) state space is a read-only memory initialized by the host&lt;sup&gt;(常量内促是由主机初始化的常量内存，居然是主机初始化的)&lt;/sup&gt;. Constant memory is accessed with a &lt;code&gt;ld.const&lt;/code&gt;​ instruction. Constant memory is restricted in size, currently limited to 64 KB&lt;sup&gt;(常量内存的大小限制，有64KB固定的)&lt;/sup&gt; which can be used to hold statically-sized constant variables. There is an additional 640 KB of constant memory, organized as ten independent 64 KB regions&lt;sup&gt;(还有额外的640KB常量内存，被组织成了10个独立的64KB区域)&lt;/sup&gt;. The driver may allocate and initialize constant buffers in these regions and pass pointers to the buffers as kernel function parameters&lt;sup&gt;(由驱动来分配和初始化这些区域中的常量内存，并将指向这些缓存的指针作为kernel的参数传递)&lt;/sup&gt;. Since the ten regions are not contiguous, the driver must ensure that constant buffers are allocated so that each buffer fits entirely within a 64 KB region and does not span a region boundary.&lt;sup&gt;(由于这十个区域不连续，驱动必须确保常量缓冲的分配方式，使每个缓冲区完全适合在一个64KB区域内，并且不跨越区域边界)&lt;/sup&gt;&lt;/p&gt;
+&lt;p&gt;Statically-sized constant variables have an optional variable initializer; constant variables with no explicit initializer are initialized to zero by default&lt;sup&gt;(没有显式初始化器的常量变量默认为初始化为零)&lt;/sup&gt;. Constant buffers allocated by the driver are initialized by the host, and pointers to such buffers are passed to the kernel as parameters. See the description of kernel parameter attributes in &lt;a class=&#34;link&#34; href=&#34;https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#kernel-function-parameter-attributes&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Kernel Function Parameter Attributes&lt;/a&gt; for more details on passing pointers to constant buffers as kernel parameters.&lt;/p&gt;
+&lt;h4 id=&#34;131-banked-constant-state-spacedeprecated&#34;&gt;1.3.1 Banked Constant State Space（deprecated）
+&lt;/h4&gt;&lt;p&gt;Previous versions of PTX exposed constant memory as a set of eleven 64 KB banks, with explicit bank numbers required for variable declaration and during access.&lt;/p&gt;
+&lt;p&gt;Prior to PTX ISA version 2.2, the constant memory was organized into fixed size banks. There were eleven 64 KB banks, and banks were specified using the &lt;code&gt;.const[bank]&lt;/code&gt;​ modifier, where &lt;em&gt;bank&lt;/em&gt; ranged from 0 to 10. If no bank number was given, bank zero was assumed.&lt;/p&gt;
+&lt;p&gt;By convention, bank zero was used for all statically-sized constant variables. The remaining banks were used to declare &lt;em&gt;incomplete&lt;/em&gt; constant arrays (as in C, for example), where the size is not known at compile time. For example, the declaration&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-gdscript3&#34; data-lang=&#34;gdscript3&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;extern&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;const&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;b32&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;const_buffer&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[];&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;resulted in &lt;code&gt;const_buffer&lt;/code&gt;​ pointing to the start of constant bank two. This pointer could then be used to access the entire 64 KB constant bank. Multiple incomplete array variables declared in the same bank were aliased, with each pointing to the start address of the specified constant bank.&lt;/p&gt;
+&lt;p&gt;To access data in contant banks 1 through 10, the bank number was required in the state space of the load instruction. For example, an incomplete array in bank 2 was accessed as follows:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-gdscript3&#34; data-lang=&#34;gdscript3&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;extern&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;const&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;b32&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;const_buffer&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[];&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;ld&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;const&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;b32&lt;/span&gt;  &lt;span class=&#34;o&#34;&gt;%&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;r1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;const_buffer&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;4&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;];&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;//&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;load&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;second&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;word&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;In PTX ISA version 2.2, we eliminated explicit banks and replaced the incomplete array representation of driver-allocated constant buffers with kernel parameter attributes that allow pointers to constant buffers to be passed as kernel parameters.&lt;/p&gt;
+&lt;p&gt;‍&lt;/p&gt;
+&lt;h3 id=&#34;14-global-state-space&#34;&gt;1.4 Global State Space
+&lt;/h3&gt;&lt;p&gt;The global (​.global​) state space is memory that is accessible by all threads in a context.&lt;sup&gt;(global state space是一块所有线程都可以访问的内存)&lt;/sup&gt; It is the mechanism by which threads in different CTAs, clusters, and grids can communicate&lt;sup&gt;(是一种不同CTAs，不同clusters，不同grids都可以交流的机制)&lt;/sup&gt;. Use &lt;code&gt;ld.global&lt;/code&gt;​, &lt;code&gt;st.global&lt;/code&gt;​, and &lt;code&gt;atom.global&lt;/code&gt;​ to access global variables.&lt;/p&gt;
+&lt;p&gt;Global variables have an optional variable initializer; global variables with no explicit initializer are initialized to zero by default.&lt;sup&gt;(典中典之默认初始化为零)&lt;/sup&gt;&lt;/p&gt;
+&lt;h3 id=&#34;15-local-state-space&#34;&gt;1.5 Local State Space
+&lt;/h3&gt;&lt;p&gt;The local state space (&lt;code&gt;.local&lt;/code&gt;​) is private memory for each thread to keep its own data. It is typically standard memory with cache&lt;sup&gt;(local state space是带有缓存的标准内存)&lt;/sup&gt;. The size is limited, as it must be allocated on a per-thread basis&lt;sup&gt;(必须按照每个线程分配)&lt;/sup&gt;. Use &lt;code&gt;ld.local&lt;/code&gt;​ and &lt;code&gt;st.local&lt;/code&gt;​ to access local variables.&lt;/p&gt;
+&lt;p&gt;When compiling to use the &lt;em&gt;Application Binary Interface (ABI)&lt;/em&gt; , .local​ state-space variables must be declared within function scope and are allocated on the stack&lt;sup&gt;(local state space必须分配到函数范围，并且必须在栈上分配内存)&lt;/sup&gt;. In implementations that do not support a stack, all local memory variables are stored at fixed addresses, recursive function calls are not supported, and ​.local​ variables may be declared at module scope&lt;sup&gt;(在不支持栈的实现中，所有的局部内存变量存储在固定地址中，不支持递归函数调用，并且local变量可以在模块范围内声明)&lt;/sup&gt;. When compiling legacy PTX code (ISA versions prior to 3.0) containing module-scoped &lt;code&gt;.local&lt;/code&gt;​ variables, the compiler silently disables use of the ABI.&lt;/p&gt;
+&lt;h3 id=&#34;16-parameter-state-space&#34;&gt;1.6 Parameter State Space
+&lt;/h3&gt;&lt;p&gt;The parameter (&lt;code&gt;.param&lt;/code&gt;​) state space is used (1) to pass input arguments from the host to the kernel, (2a) to declare formal input and return parameters for device functions called from within kernel execution, and (2b) to declare locally-scoped byte array variables that serve as function call arguments, typically for passing large structures by value to a function. Kernel function parameters differ from device function parameters in terms of access and sharing (read-only versus read-write, per-kernel versus per-thread)&lt;sup&gt;(parameter对于kernel function（&lt;strong&gt;global&lt;/strong&gt;）和device function（&lt;strong&gt;device&lt;/strong&gt;）的访问类型和作用域是不一样的)&lt;/sup&gt;. Note that PTX ISA versions 1.x supports only kernel function parameters in .param space&lt;sup&gt;(ptx 1.x版本只支持function parameters in .param space（不支持device function）)&lt;/sup&gt;; device function parameters were previously restricted to the register state space. The use of parameter state space for device function parameters was introduced in PTX ISA version 2.0&lt;sup&gt;(parameter for device function 在PTX 2.x引入)&lt;/sup&gt; and requires target architecture &lt;code&gt;sm_20&lt;/code&gt;​ or higher. Additional sub-qualifiers ​::entry​ or ​::func​ can be specified on instructions with ​.param​ state space to indicate whether the address refers to kernel function parameter or device function parameter&lt;sup&gt;(可以在.param后面指定额外的子限定符::entry或::func，来指示地址是否引用内核函数或设备函数参数)&lt;/sup&gt;. If no sub-qualifier is specified with the &lt;code&gt;.param&lt;/code&gt;​ state space, then the default sub-qualifier is specific to and dependent on the exact instruction. For example, &lt;code&gt;st.param&lt;/code&gt;​ is equivalent to &lt;code&gt;st.param::func&lt;/code&gt;​ whereas &lt;code&gt;isspacep.param&lt;/code&gt;​ is equivalent to &lt;code&gt;isspacep.param::entry&lt;/code&gt;​. Refer to the instruction description for more details on default sub-qualifier assumption.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Note&lt;sup&gt;(讲了一大堆，重心落在第一句和最后一句，说的是： “由于.param空间的位置是implementation specific，所以PTX code should no assumptions about the relative locations or ordering of .param space variables.”)&lt;/sup&gt;&lt;/p&gt;
+&lt;p&gt;The location of parameter space is implementation specific. For example, in some implementations kernel parameters reside in global memory. No access protection is provided between parameter and global space in this case. Though the exact location of the kernel parameter space is implementation specific, the kernel parameter space window is always contained within the global space window. Similarly, function parameters are mapped to parameter passing registers and/or stack locations based on the function calling conventions of the &lt;em&gt;Application Binary Interface (ABI)&lt;/em&gt; . Therefore, PTX code should make no assumptions about the relative locations or ordering of &lt;code&gt;.param&lt;/code&gt;​ space variables.&lt;/p&gt;&lt;/blockquote&gt;
+&lt;h4 id=&#34;161-kernel-function-parameters&#34;&gt;1.6.1 Kernel Function Parameters
+&lt;/h4&gt;&lt;p&gt;Each kernel function definition includes an optional list of parameters. These parameters are addressable, read-only variables declared in the &lt;code&gt;.param&lt;/code&gt;​ state space. Values passed from the host to the kernel&lt;sup&gt;(值从host到kernel，用ld.param )&lt;/sup&gt; are accessed through these parameter variables using &lt;code&gt;ld.param&lt;/code&gt;​ instructions. The kernel parameter variables are shared across all CTAs from all clusters within a grid.&lt;sup&gt;(这么大范围的共享，我猜是global)&lt;/sup&gt;&lt;/p&gt;
+&lt;p&gt;The address of a kernel parameter may be moved into a register using the ​mov​ instruction. The resulting address is in the ​.param​ state space and is accessed using ​ld.param&lt;sup&gt;(内核参数的地址可以用mov来移入寄存器，拿到的这个地址在.param状态空间中，可以通过ld.param来访问)&lt;/sup&gt;​ instructions.&lt;sup&gt;(内核参数的地址可以用mov来移入寄存器，拿到的这个地址在.param状态空间中，可以通过ld.param来访问)&lt;/sup&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Example&lt;sup&gt;(对于这个示例， .entry是一个directive，他用于表明此处是一个内核入口点 foo是函数名 .param是space state .b32表明参数是32位的（bit？binary？） .align是一个directive，属于Variables，后面跟一个可选的byte-count来指定对齐方式 到正文     .reg .u32 %n;     .reg .f64 %d; 意为声明一个32位无符号整数寄存器，取名叫做n，用%n引用 声明一个64位浮点数寄存器，取名叫做d，用%d引用 然后是     ld.param.u32 %n, [N];     ld.param.f64 %d, [buffer]; ld是一个instruction，（ld move data from addressable state space to registers.） 表示从param state space中分别ld一个u32和f64的数据)&lt;/sup&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;8
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;.entry foo ( .param .b32 N, .param .align 8 .b8 buffer[64] )
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    .reg .u32 %n;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    .reg .f64 %d;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    ld.param.u32 %n, [N];
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    ld.param.f64 %d, [buffer];
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    ...
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;Example&lt;sup&gt;(和前一个例子差不多 .entry表明函数入口 bar是函数名称 有一个b32的参数叫做len .reg .u32 %ptr,%n;声明了两个u32的寄存器分别叫做ptr和n mov（The mov instructions copies data between registers）mov指令在registers之间复制数据，但实际上这里是从state space到register，应该都可以吧 mov.u32      %ptr, len;将len的值复制到ptr寄存器中去 ld.param.u32 %n, [%ptr];就是从ptr加载一个u32到n中去)&lt;/sup&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;.entry bar ( .param .b32 len )
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    .reg .u32 %ptr, %n;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    mov.u32      %ptr, len;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    ld.param.u32 %n, [%ptr];
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    ...
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Kernel function parameters &lt;sup&gt;(parameters既可以保留数据值也可以存const、global、local  or shared state space地址)&lt;/sup&gt;may represent normal data values, or they may hold addresses to objects in constant, global, local, or shared state spaces. In the case of pointers, the compiler and runtime system need information about which parameters are pointers, and to which state space they point&lt;sup&gt;(如果parameters是指针的话，那么编译器和运行时系统就需要关于哪些参数是指针，并且这些指针指向哪些state space的信息。 存在提供这些信息的directive，具体的内容在Kernel Function Parameter Attributes里面看)&lt;/sup&gt;. Kernel parameter attribute directives are used to provide this information at the PTX level. See &lt;a class=&#34;link&#34; href=&#34;https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#kernel-function-parameter-attributes&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Kernel Function Parameter Attributes&lt;/a&gt; for a description of kernel parameter attribute directives.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Note&lt;sup&gt;(出现了一个新的instructino，cvta，预告一下，这个instruction在9.7.9.20)&lt;/sup&gt;&lt;/p&gt;
+&lt;p&gt;The current implementation does not allow creation of generic pointers to constant variables (&lt;code&gt;cvta.const&lt;/code&gt;​) in programs that have pointers to constant buffers passed as kernel parameters.&lt;/p&gt;&lt;/blockquote&gt;
+&lt;h4 id=&#34;162-kernel-function-parameter-attributes可以用ptr来表明该参数是指向内存的指针还可以指示该指针所指向内存的状态空间和对齐方式&#34;&gt;1.6.2 Kernel Function Parameter Attributes&lt;sup&gt;(可以用.ptr来表明该参数是指向内存的指针，还可以指示该指针所指向内存的状态空间和对齐方式)&lt;/sup&gt;
+&lt;/h4&gt;&lt;p&gt;Kernel function parameters may be declared with an optional .ptr attribute to indicate that a parameter is a pointer to memory, and also indicate the state space and alignment of the memory being pointed to. &lt;a class=&#34;link&#34; href=&#34;https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#kernel-parameter-attribute-ptr&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Kernel Parameter Attribute: .ptr&lt;/a&gt; describes the &lt;code&gt;.ptr&lt;/code&gt;​ kernel parameter attribute.&lt;/p&gt;
+&lt;h4 id=&#34;163-kernel-parameter-attributeptr&#34;&gt;1.6.3 Kernel Parameter Attribute：.ptr
+&lt;/h4&gt;&lt;p&gt;&lt;strong&gt;.ptr&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Kernel parameter alignment attribute.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Syntax&lt;sup&gt;(这里的.type就是u32之类的，这里的.space就是state space)&lt;/sup&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-gdscript3&#34; data-lang=&#34;gdscript3&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;param&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;type&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ptr&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;space&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;align&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;N&lt;/span&gt;  &lt;span class=&#34;n&#34;&gt;varname&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;param&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;type&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ptr&lt;/span&gt;        &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;align&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;N&lt;/span&gt;  &lt;span class=&#34;n&#34;&gt;varname&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;space&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;const&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;global&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;local&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;shared&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;};&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;&lt;strong&gt;Description&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Used to specify the state space and, optionally, the alignment&lt;sup&gt;(alignment是可选的)&lt;/sup&gt; of memory pointed to by a pointer type kernel parameter. The alignment value &lt;em&gt;N&lt;/em&gt;, if present, must be a power of two. If no state space is specified, the pointer is assumed to be a generic address pointing to one of const, global, local, or shared memory&lt;sup&gt;(如果没有指向state space，那么这个指针就被假定为指向const、global、local or shared memory的通用地址)&lt;/sup&gt;. If no alignment is specified, the memory pointed to is assumed to be aligned to a 4 byte boundary.&lt;sup&gt;(如果没有指定alignment，那么就默认对齐4byte)&lt;/sup&gt;&lt;/p&gt;
+&lt;p&gt;Spaces between ​.ptr​, ​.space​, and ​.align​ may be eliminated to improve readability.&lt;sup&gt;(这之间的空格也可以消除)&lt;/sup&gt;​&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;PTX ISA Notes&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Introduced in PTX ISA version 2.2.&lt;/li&gt;
+&lt;li&gt;Support for generic addressing of .const space added in PTX ISA version 3.1.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Target ISA Notes&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Supported on all target architectures.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Examples&lt;sup&gt;(这个例子很清晰，是按照前面说的语法来的 )&lt;/sup&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-gdscript3&#34; data-lang=&#34;gdscript3&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;entry&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;foo&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;param&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;u32&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;param1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;             &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;param&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;u32&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ptr&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;global&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;align&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;16&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;param2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;             &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;param&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;u32&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ptr&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;const&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;align&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;8&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;param3&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;             &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;param&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;u32&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ptr&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;align&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;16&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;param4&lt;/span&gt;  &lt;span class=&#34;o&#34;&gt;//&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;generic&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;address&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;                                               &lt;span class=&#34;o&#34;&gt;//&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pointer&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;..&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h4 id=&#34;164-device-function-parameters&#34;&gt;1.6.4 Device Function Parameters
+&lt;/h4&gt;&lt;p&gt;PTX ISA version 2.0 extended the use of parameter space to device function parameters&lt;sup&gt;(这一段有点复杂，总之就是在PTX ISA2中扩展了parameter空间对设备函数参数的使用)&lt;/sup&gt;. The most common use is for passing objects by value that do not fit within a PTX register, such as C structures larger than 8 bytes. In this case, a byte array in parameter space is used. Typically, the caller will declare a locally-scoped &lt;code&gt;.param&lt;/code&gt;​ byte array variable that represents a flattened C structure or union. This will be passed by value to a callee, which declares a &lt;code&gt;.param&lt;/code&gt;​ formal parameter having the same size and alignment as the passed argument.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Example&lt;sup&gt;(有一点意外，这里参数.param .align 8 .b8 buffer[12]里面的 .8的意思是buffer[12]里面的数据是字节，即buffer是一个字节数组，如果将这里的.b8改成f64，则表明这个buffer是一个double数组，说明前面的理解是不到位的。 这一个示例对.type这样的ptx的说明很清晰 第一段是函数实现，这个函数的具体的内容 第二段是函数的调用：call foo,（4，mystruct）; 看第二段有一个包括了double和int的结构体，加在一起8+4=12字节，超过了8字节，如上述所说的使用，就需要用param空间了 前面遇到过ld，顺便看了一下st，st的意思是from register to memory 由于mystruct是由一个double和一个int组成的， 所以他这里是先将8字节大小的f64 dbl放入mystruct里面 然后偏移8字节再放入4字节大小的s32 x，在传入foo调用)&lt;/sup&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;19
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;20
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;21
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;22
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-gdscript3&#34; data-lang=&#34;gdscript3&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;//&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;pass&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;object&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;of&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;type&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;struct&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;double&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;d&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt; &lt;span class=&#34;ne&#34;&gt;int&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;y&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;};&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;func&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;foo&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;reg&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;b32&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;N&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;param&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;align&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;8&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;b8&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;buffer&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;12&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;reg&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;f64&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;%&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;d&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;reg&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;s32&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;%&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;y&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;ld&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;param&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;f64&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;%&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;d&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;buffer&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;];&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;ld&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;param&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;s32&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;%&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;y&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;buffer&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;8&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;];&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;o&#34;&gt;...&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;//&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;code&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;snippet&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;from&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;the&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;caller&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;//&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;struct&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;double&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;d&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt; &lt;span class=&#34;ne&#34;&gt;int&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;y&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;mystruct&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;is&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;flattened&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;passed&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;to&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;foo&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;o&#34;&gt;...&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;reg&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;f64&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;dbl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;reg&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;s32&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;x&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;param&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;align&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;8&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;b8&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;mystruct&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;o&#34;&gt;...&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;st&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;param&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;f64&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;mystruct&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;],&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;dbl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;st&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;param&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;s32&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;mystruct&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;8&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;],&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;x&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;call&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;foo&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;4&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;mystruct&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;o&#34;&gt;...&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;See the section on function call syntax for more details.&lt;/p&gt;
+&lt;p&gt;Function input parameters may be read via &lt;code&gt;ld.param&lt;/code&gt;​ and function return parameters may be written using &lt;code&gt;st.param&lt;/code&gt;​; it is illegal to write to an input parameter or read from a return parameter.&lt;sup&gt;(没有具体示例，不是很懂这个非法场景)&lt;/sup&gt;&lt;/p&gt;
+&lt;p&gt;Aside from passing structures by value, &lt;code&gt;.param&lt;/code&gt;​ space is also required whenever a formal parameter has its address taken within the called function. In PTX, the address of a function input parameter may be moved into a register using the &lt;code&gt;mov&lt;/code&gt;​ instruction. Note that the parameter will be copied to the stack if necessary, and so the address will be in the &lt;code&gt;.local&lt;/code&gt;​ state space and is accessed via &lt;code&gt;ld.local&lt;/code&gt;​ and &lt;code&gt;st.local&lt;/code&gt;​ instructions. It is not possible to use &lt;code&gt;mov&lt;/code&gt;​ to get the address of or a locally-scoped &lt;code&gt;.param&lt;/code&gt;​ space variable. Starting PTX ISA version 6.0, it is possible to use &lt;code&gt;mov&lt;/code&gt;​ instruction to get address of return parameter of device function.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Example&lt;sup&gt;(出现了一个新的instruction，在9.7.12.2里面被称为control flow instructions包括：{}、@、bra、call、ret、exit 应该就是跳转（branch）的意思 出现了一个新的type specifier（9.3），.pred，长的很像instruction，但是没在instruction列表里面找到他，作用应该只是用于表明此变量是谓词变量（比大小？布尔类型？） 出现了一个新的instruction，在9.7.6里面被称为comparison and selection instructions包括set、setp、selp、slct 他妈的看上去set和setp是一样的，damn 这里的eq是comparison operators在9.3.1comparison里面有描述 值得一提的是这个loop没有文档的描述（显然猜测为普通的循环） 这个例子中第一次出现了在声明寄存器变量的时候用.pred表明这个变量是谓词类型（据AI说这是bool类型） @%p bra         Done;这里的整个循环是如果%p为true则跳转到Done，即结束循环 这之前有一句setp.eq.u32  %p, %n, 0;会一直做n和0的判断，如果n等于0，则将p设置为true，即若n为0，则跳出循环，去Done 循环体里面有一个sub指令，表明每次循环n都会自减一次，所以这个循环还是很完整合理的。)&lt;/sup&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;19
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;20
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-gdscript3&#34; data-lang=&#34;gdscript3&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;//&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;pass&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;array&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;of&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;up&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;to&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;eight&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;floating&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;point&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;values&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;buffer&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;func&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;foo&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;param&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;b32&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;N&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;param&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;b32&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;buffer&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;32&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;reg&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;u32&lt;/span&gt;  &lt;span class=&#34;o&#34;&gt;%&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;n&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;%&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;r&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;reg&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;f32&lt;/span&gt;  &lt;span class=&#34;o&#34;&gt;%&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;f&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;reg&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;pred&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;%&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;p&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;ld&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;param&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;u32&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;%&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;n&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;N&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;];&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;mov&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;u32&lt;/span&gt;      &lt;span class=&#34;o&#34;&gt;%&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;r&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;buffer&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;  &lt;span class=&#34;o&#34;&gt;//&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;forces&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;buffer&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;to&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;local&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;state&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;space&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;Loop&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;setp&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;eq&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;u32&lt;/span&gt;  &lt;span class=&#34;o&#34;&gt;%&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;p&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;%&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;n&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;err&#34;&gt;@&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;%&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;p&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;bra&lt;/span&gt;         &lt;span class=&#34;n&#34;&gt;Done&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;ld&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;local&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;f32&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;%&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;f&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;%&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;r&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;];&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;o&#34;&gt;...&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;add&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;u32&lt;/span&gt;      &lt;span class=&#34;o&#34;&gt;%&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;r&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;%&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;r&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;4&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;sub&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;u32&lt;/span&gt;      &lt;span class=&#34;o&#34;&gt;%&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;n&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;%&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;n&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;bra&lt;/span&gt;          &lt;span class=&#34;n&#34;&gt;Loop&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;Done&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;o&#34;&gt;...&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id=&#34;17-shared-state-space&#34;&gt;1.7 Shared State Space
+&lt;/h3&gt;&lt;p&gt;The shared (&lt;code&gt;.shared&lt;/code&gt;​) state space is a memory that is owned by an executing CTA and is accessible to the threads of all the CTAs within a cluster&lt;sup&gt;(shared state space居然是accessible to the threads of all the CTAs within a cluster，但是我猜是只有CTA内部才能通信，虽然整个clusters可以访问)&lt;/sup&gt;. An address in shared memory can be read and written by any thread in a CTA cluster.&lt;/p&gt;
+&lt;p&gt;Additional sub-qualifiers&lt;sup&gt;(他这里表明在.shared 之后可以指定::cta或者::cluster来表明这个shared地址是属于正执行的CTA还是cluster中任何CTA的共享内存窗口。.shared::cta 窗口中的地址也包含在 .shared::cluster窗口中。如果没有指定则默认是::cta，例如：ld.shared 相当于 ld.shared::cta)&lt;/sup&gt; &lt;code&gt;::cta&lt;/code&gt;​ or &lt;code&gt;::cluster&lt;/code&gt;​ can be specified on instructions with &lt;code&gt;.shared&lt;/code&gt;​ state space to indicate whether the address belongs to the shared memory window of the executing CTA or of any CTA in the cluster respectively. The addresses in the &lt;code&gt;.shared::cta&lt;/code&gt;​ window also fall within the &lt;code&gt;.shared::cluster&lt;/code&gt;​ window. If no sub-qualifier is specified with the &lt;code&gt;.shared&lt;/code&gt;​ state space, then it defaults to &lt;code&gt;::cta&lt;/code&gt;​. For example, &lt;code&gt;ld.shared&lt;/code&gt;​ is equivalent to &lt;code&gt;ld.shared::cta&lt;/code&gt;​.&lt;/p&gt;
+&lt;p&gt;Variables declared in ​.shared​ state space refer to the memory addresses in the current CTA. Instruction ​mapa​ gives the ​.shared::cluster&lt;sup&gt;(.shared指向当前CTA中的内存地址，mapa给出了在同一cluster里面其他CTA的地址)&lt;/sup&gt;​ address of the corresponding variable in another CTA in the cluster.&lt;sup&gt;(.shared指向当前CTA中的内存地址，mapa给出了在同一cluster里面其他CTA的地址)&lt;/sup&gt;&lt;/p&gt;
+&lt;p&gt;Shared memory typically has some optimizations to support the sharing. One example is broadcast&lt;sup&gt;(shared的优化方案例子——————广播)&lt;/sup&gt;; where all threads read from the same address. Another is sequential access from sequential threads.&lt;/p&gt;
+&lt;h3 id=&#34;18-texture-state-spacedeprecated&#34;&gt;1.8 Texture State Space（deprecated）
+&lt;/h3&gt;&lt;p&gt;The texture (&lt;code&gt;.tex&lt;/code&gt;​) state space is global memory accessed via the texture instruction. It is shared by all threads in a context. Texture memory is read-only and cached, so accesses to texture memory are not coherent with global memory stores to the texture image.&lt;/p&gt;
+&lt;p&gt;The GPU hardware has a fixed number of texture bindings that can be accessed within a single kernel (typically 128). The .tex directive will bind the named texture memory variable to a hardware texture identifier, where texture identifiers are allocated sequentially beginning with zero. Multiple names may be bound to the same physical texture identifier. An error is generated if the maximum number of physical resources is exceeded. The texture name must be of type &lt;code&gt;.u32&lt;/code&gt;​ or &lt;code&gt;.u64&lt;/code&gt;​.&lt;/p&gt;
+&lt;p&gt;Physical texture resources are allocated on a per-kernel granularity, and &lt;code&gt;.tex&lt;/code&gt;​ variables are required to be defined in the global scope.&lt;/p&gt;
+&lt;p&gt;Texture memory is read-only. A texture’s base address is assumed to be aligned to a 16 byte boundary.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Example&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;.tex .u32 tex_a;         // bound to physical texture 0
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;.tex .u32 tex_c, tex_d;  // both bound to physical texture 1
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;.tex .u32 tex_d;         // bound to physical texture 2
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;.tex .u32 tex_f;         // bound to physical texture 3
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Note&lt;/p&gt;
+&lt;p&gt;Explicit declarations of variables in the texture state space is deprecated, and programs should instead reference texture memory through variables of type &lt;code&gt;.texref&lt;/code&gt;​. The &lt;code&gt;.tex&lt;/code&gt;​ directive is retained for backward compatibility, and variables declared in the &lt;code&gt;.tex&lt;/code&gt;​ state space are equivalent to module-scoped &lt;code&gt;.texref&lt;/code&gt;​ variables in the &lt;code&gt;.global&lt;/code&gt;​ state space.&lt;/p&gt;
+&lt;p&gt;For example, a legacy PTX definitions such as&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;.tex .u32 tex_a;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;is equivalent to:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;.global .texref tex_a;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;See &lt;a class=&#34;link&#34; href=&#34;https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#texture-sampler-and-surface-types&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Texture Sampler and Surface Types&lt;/a&gt; for the description of the &lt;code&gt;.texref&lt;/code&gt;​ type and &lt;a class=&#34;link&#34; href=&#34;https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#texture-instructions&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Texture Instructions&lt;/a&gt; for its use in texture instructions.&lt;/p&gt;
+&lt;h2 id=&#34;2-tpyes&#34;&gt;2. Tpyes
+&lt;/h2&gt;&lt;h3 id=&#34;21-fundamental-types&#34;&gt;2.1 Fundamental Types
+&lt;/h3&gt;&lt;p&gt;In PTX, the fundamental types reflect the native data types supported by the target architectures. A fundamental type specifies both a basic type and a size&lt;sup&gt;(一个type由basic type和size组成)&lt;/sup&gt;. Register variables are always of a fundamental type, and instructions operate on these types. The same type-size specifiers are used for both variable definitions and for typing instructions, so their names are intentionally short.&lt;sup&gt;(这里说了type specifiers到处都在用，所以设计的很短)&lt;/sup&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#fundamental-types-fundamental-type-specifiers&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Table 8&lt;/a&gt; lists the fundamental type specifiers for each basic type:&lt;/p&gt;
+&lt;p&gt;​&lt;img src=&#34;http://127.0.0.1:3622/assets/image-20250220152438-qg4b3sq.png&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image&#34;
+	
+	
+&gt;​&lt;/p&gt;
+&lt;p&gt;Most instructions have one or more type specifiers, needed to fully specify instruction behavior. Operand types and sizes are checked against instruction types for compatibility.&lt;/p&gt;
+&lt;p&gt;Two fundamental types are compatible if they have the same basic type and are the same size. Signed and unsigned integer types are compatible if they have the same size. The bit-size type is compatible with any fundamental type having the same size.&lt;/p&gt;
+&lt;p&gt;In principle, all variables (aside from predicates) could be declared using only bit-size types&lt;sup&gt;(所有的变量（除了谓词以外）都可以仅使用位大小类型来声明)&lt;/sup&gt;, but typed variables enhance program readability and allow for better operand type checking.&lt;/p&gt;
+&lt;h3 id=&#34;22-restricted-use-of-sub-word-sizes&#34;&gt;2.2 Restricted Use of Sub-Word Sizes
+&lt;/h3&gt;&lt;p&gt;The ​.u8​, ​.s8​, and ​.b8​ instruction types are restricted to ​ld​, ​st​, and ​cvt​ instructions&lt;sup&gt;(u8、s8和b8仅限于ld、st和cvt使用)&lt;/sup&gt;. The &lt;code&gt;.f16&lt;/code&gt;​ floating-point type is allowed only in conversions to and from &lt;code&gt;.f32&lt;/code&gt;​, &lt;code&gt;.f64&lt;/code&gt;​ types, in half precision floating point instructions and texture fetch instructions. The &lt;code&gt;.f16x2&lt;/code&gt;​ floating point type is allowed only in half precision floating point arithmetic instructions and texture fetch instructions.&lt;/p&gt;
+&lt;p&gt;For convenience&lt;sup&gt;(为了方便，ld、st和cvt允许源和目的操作数比指令本身要求的类型大小要大)&lt;/sup&gt;, &lt;code&gt;ld&lt;/code&gt;​, &lt;code&gt;st&lt;/code&gt;​, and &lt;code&gt;cvt&lt;/code&gt;​ instructions permit source and destination data operands to be wider than the instruction-type size, so that narrow values may be loaded, stored, and converted using regular-width registers. For example, 8-bit or 16-bit values may be held directly in 32-bit or 64-bit registers when being loaded, stored, or converted to other types and sizes.&lt;/p&gt;
+&lt;h3 id=&#34;23-alternate-floating-point-data-formats&#34;&gt;2.3 Alternate Floating-Point Data Formats
+&lt;/h3&gt;&lt;p&gt;The fundamental floating-point types supported in PTX have implicit bit representations&lt;sup&gt;(PTX支持的基本浮点类型具有隐式的位表示，指示用于存储指数和尾数的位数。例如f16隐式为e5m10)&lt;/sup&gt; that indicate the number of bits used to store exponent and mantissa. For example, the &lt;code&gt;.f16&lt;/code&gt;​ type indicates 5 bits reserved for exponent and 10 bits reserved for mantissa. In addition to the floating-point representations assumed by the fundamental types, PTX allows the following alternate floating-point data formats:&lt;/p&gt;
+&lt;p&gt;​bf16&lt;sup&gt;(8e7m)&lt;/sup&gt;​ &lt;strong&gt;data format&lt;/strong&gt;:This data format is a 16-bit floating point format with 8 bits for exponent and 7 bits for mantissa. A register variable containing ​bf16​ data must be declared with ​.b16&lt;sup&gt;(包含bf16数据的寄存器变量必须使用.b16类型声明)&lt;/sup&gt;​ type.&lt;sup&gt;(包含bf16数据的寄存器变量必须使用.b16类型声明)&lt;/sup&gt;&lt;/p&gt;
+&lt;p&gt;​&lt;code&gt;e4m3&lt;/code&gt;​ &lt;strong&gt;data format&lt;/strong&gt;:This data format is an 8-bit floating point format with 4 bits for exponent and 3 bits for mantissa. The ​e4m3​ encoding does not support infinity and ​NaN​ values are limited to ​0x7f​ and ​0xff​. A register variable containing ​e4m3&lt;sup&gt;(e4m3不支持无限大，如果使用e4m3则0x7f和0xff就会导致NaN 包含e4m3的寄存器变量必须用位大小类型声明)&lt;/sup&gt;​ value must be declared using bit-size type.&lt;sup&gt;(e4m3不支持无限大，如果使用e4m3则0x7f和0xff就会导致NaN 包含e4m3的寄存器变量必须用位大小类型声明)&lt;/sup&gt;&lt;/p&gt;
+&lt;p&gt;​&lt;code&gt;e5m2&lt;/code&gt;​ &lt;strong&gt;data format&lt;/strong&gt;:This data format is an 8-bit floating point format with 5 bits for exponent and 2 bits for mantissa. A register variable containing ​e5m2&lt;sup&gt;(同样的，包含e5m2的寄存器必须用位大小类型声明)&lt;/sup&gt;​ value must be declared using bit-size type.&lt;sup&gt;(同样的，包含e5m2的寄存器必须用位大小类型声明)&lt;/sup&gt;&lt;/p&gt;
+&lt;p&gt;​&lt;code&gt;tf32&lt;/code&gt;​ &lt;strong&gt;data format&lt;/strong&gt;:This data format is a special 32-bit floating point format supported by the matrix multiply-and-accumulate instructions, with the same range as &lt;code&gt;.f32&lt;/code&gt;​ and reduced precision (&amp;gt;=10 bits). The internal layout of &lt;code&gt;tf32&lt;/code&gt;​ format is implementation defined. PTX facilitates conversion from single precision ​.f32​ type to ​tf32​ format. A register variable containing ​tf32​ data must be declared with ​.b32&lt;sup&gt;(ptx支持从单精度f32到tf32的转换，包含tf32的寄存器变量必须使用b32类型声明)&lt;/sup&gt;​ type.&lt;sup&gt;(ptx支持从单精度f32到tf32的转换，包含tf32的寄存器变量必须使用b32类型声明)&lt;/sup&gt;&lt;/p&gt;
+&lt;p&gt;​&lt;code&gt;e2m1&lt;/code&gt;​ &lt;strong&gt;data format&lt;/strong&gt;:This data format is a 4-bit floating point format with 2 bits for exponent and 1 bit for mantissa. The ​e2m1​ encoding does not support infinity and ​NaN&lt;sup&gt;(e2m1也不支持无限大)&lt;/sup&gt;​. e2m1​ values must be used in a packed format specified as ​e2m1x2​. A register variable containing two ​e2m1​ values must be declared with ​.b8&lt;sup&gt;(e2m1必须以指定的压缩格式e2m1x2使用，包含两个e2m1值的寄存器变量必须使用.b8类型声明)&lt;/sup&gt;​ type.&lt;sup&gt;(e2m1必须以指定的压缩格式e2m1x2使用，包含两个e2m1值的寄存器变量必须使用.b8类型声明)&lt;/sup&gt;&lt;/p&gt;
+&lt;p&gt;​&lt;code&gt;e2m3&lt;/code&gt;​ &lt;strong&gt;data format&lt;/strong&gt;:This data format is a 6-bit floating point format with 2 bits for exponent and 3 bits for mantissa. The ​e2m3​ encoding does not support infinity and ​NaN&lt;sup&gt;(e2m3不支持无限大和NaN)&lt;/sup&gt;​. e2m3&lt;sup&gt;(e2m3必须用packed格式e2m3x2使用)&lt;/sup&gt;​ values must be used in a packed format specified as &lt;sup&gt;(e2m3必须以指定的packed格式e2m3x2使用)&lt;/sup&gt;​e2m3x2&lt;sup&gt;(e2m3必须用packed格式e2m3x2使用)&lt;/sup&gt;​. A register variable containing two &lt;code&gt;e2m3&lt;/code&gt;​ values must be declared with ​.b16​ type&lt;sup&gt;(e2m3必须声明为.b16类型，)&lt;/sup&gt; where each &lt;code&gt;.b8&lt;/code&gt;​ element has 6-bit floating point value and 2 MSB bits padded with zeros.&lt;/p&gt;
+&lt;p&gt;​&lt;code&gt;e3m2&lt;/code&gt;​ &lt;strong&gt;data format&lt;/strong&gt;:This data format is a 6-bit floating point format with 3 bits for exponent and 2 bits for mantissa. The ​e3m2​ encoding does not support infinity and ​NaN&lt;sup&gt;(e3m2不支持无限大和NaN)&lt;/sup&gt;. &lt;code&gt;e3m2&lt;/code&gt;​ values must be used in a packed format specified as ​e3m2x2&lt;sup&gt;(e3m2必须以指定的打包格式e3m2x2使用)&lt;/sup&gt;​. A register variable containing two &lt;code&gt;e3m2&lt;/code&gt;​ values must be declared with ​.b16​ type &lt;sup&gt;(包含两个e3m2值的寄存器变量必须声明为.b16类型，其中每个.b8元素具有6为浮点数，并且高两位用0填充)&lt;/sup&gt;where each &lt;code&gt;.b8&lt;/code&gt;​ element has 6-bit floating point value and 2 MSB bits padded with zeros.&lt;/p&gt;
+&lt;p&gt;​&lt;code&gt;ue8m0&lt;/code&gt;​ &lt;strong&gt;data format&lt;/strong&gt;:This data format is an 8-bit unsigned floating-point format with 8 bits for exponent and 0 bits for mantissa. The &lt;code&gt;ue8m0&lt;/code&gt;​ encoding does not support infinity.&lt;sup&gt;(不支持无限大)&lt;/sup&gt; NaN​ value is limited to ​0xff&lt;sup&gt;(NaN被限制为0xff)&lt;/sup&gt;​. ue8m0​ values must be used in a packed format specified as ​ue8m0x2&lt;sup&gt;(ue8m0值必须以指定的打包格式ue8m0x2使用。包含连个ue8m0 的寄存器必须声明为.b16类型)&lt;/sup&gt;​. A register variable containing two &lt;code&gt;ue8m0&lt;/code&gt;​ values must be declared with &lt;code&gt;.b16&lt;/code&gt;​ type.&lt;/p&gt;
+&lt;p&gt;​&lt;code&gt;ue4m3&lt;/code&gt;​ &lt;strong&gt;data format&lt;/strong&gt;:This data format is a 7-bit unsigned floating-point format with 4 bits for exponent and 3 bits for mantissa. The &lt;code&gt;ue4m3&lt;/code&gt;​ encoding does not support infinity&lt;sup&gt;(同样的不支持无限大)&lt;/sup&gt;. NaN​ value is limited to ​0x7f&lt;sup&gt;(NaN被限制为0x7f)&lt;/sup&gt;​. A register variable containing single &lt;code&gt;ue4m3&lt;/code&gt;​ value must be declared with &lt;code&gt;.b8&lt;/code&gt;​ type having MSB bit padded with zero.&lt;/p&gt;
+&lt;p&gt;Alternate data formats cannot be used as fundamental types. They are supported as source or destination formats by certain instructions.&lt;sup&gt;(替代数据不能作为基本类型使用。它们仅在某些指令中作为源格式或目标格式支持)&lt;/sup&gt;&lt;/p&gt;
+&lt;p&gt;​&lt;img src=&#34;http://127.0.0.1:3622/assets/image-20250220155752-i63t9u0.png&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image&#34;
+	
+	
+&gt;​&lt;/p&gt;
+&lt;h3 id=&#34;24-packed-data-types&#34;&gt;2.4 Packed Data Types
+&lt;/h3&gt;&lt;p&gt;Certain PTX instructions operate on two or more sets of inputs in parallel, and produce two or more outputs&lt;sup&gt;(某些PTX指令并行处理两个或多个输入集，并生成两个或多个输出。此类指令可以使用以打包格式存储的数据。)&lt;/sup&gt;. Such instructions can use the data stored in a packed format. PTX supports packing two or four values of the same scalar data type into a single, larger value&lt;sup&gt;(PTX支持将两个或四个相同标量数据类型的值打包成一个单一的、更大的值。)&lt;/sup&gt;. The packed value is considered as a value of a &lt;em&gt;packed data type&lt;/em&gt;. In this section we describe the packed data types supported in PTX.&lt;/p&gt;
+&lt;h4 id=&#34;241-packed-floating-point-data-types&#34;&gt;2.4.1 Packed Floating Point Data Types
+&lt;/h4&gt;&lt;p&gt;PTX supports various variants of packed floating point data types&lt;sup&gt;(PTX支持许多packed 浮点数据类型，如下table9所示)&lt;/sup&gt;. Out of them, only ​.f16x2​ is supported as a fundamental type&lt;sup&gt;(只有.f16x2被支持为基本类型)&lt;/sup&gt;, while others cannot be used as fundamental types - they are supported as instruction types on certain instructions&lt;sup&gt;(不能作为基本类型的packed data types只能在某些指令中作为指令类型得到支持。)&lt;/sup&gt;. When using an instruction with such non-fundamental types, the operand data variables must be of bit type of appropriate size. For example, all of the operand variables must be of type &lt;code&gt;.b32&lt;/code&gt;​ for an instruction with instruction type as &lt;code&gt;.bf16x2&lt;/code&gt;​. &lt;a class=&#34;link&#34; href=&#34;https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#operand-types-for-packed-floating-point-instruction-type&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Table 9&lt;/a&gt; described various variants of packed floating point data types in PTX.&lt;/p&gt;
+&lt;p&gt;​&lt;img src=&#34;http://127.0.0.1:3622/assets/image-20250222145300-kqdwcxg.png&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image&#34;
+	
+	
+&gt;​&lt;/p&gt;
+&lt;h4 id=&#34;242-packed-integer-data-types&#34;&gt;2.4.2 Packed Integer Data Types
+&lt;/h4&gt;&lt;p&gt;PTX supports two variants of packed integer data types: ​.u16x2​ and ​.s16x2&lt;sup&gt;(和浮点数不同，PTX只支持两种packed 整数数据类型：.u16x2和.s16x2)&lt;/sup&gt;​. The packed data type consists of two &lt;code&gt;.u16&lt;/code&gt;​ or &lt;code&gt;.s16&lt;/code&gt;​ values. A register variable containing ​.u16x2​ or ​.s16x2​ data must be declared with ​.b32​ type&lt;sup&gt;(包含 .u16x2 或 .s16x2 数据的寄存器变量必须声明为 .b32 类型。打包整数数据类型不能作为基本类型使用。它们仅在某些指令中作为指令类型得到支持。)&lt;/sup&gt;. Packed integer data types cannot be used as fundamental types. They are supported as instruction types on certain instructions.&lt;/p&gt;
+&lt;h2 id=&#34;3-texture-sampler-and-surface-types似乎与数值计算这个方向没有太大的关系暂且没看但是为了保持ptx学习的完整性还是cv了上去&#34;&gt;3. Texture Sampler and Surface Types&lt;sup&gt;(似乎与数值计算这个方向没有太大的关系，暂且没看，但是为了保持PTX学习的完整性，还是CV了上去)&lt;/sup&gt;
+&lt;/h2&gt;&lt;p&gt;PTX includes built-in ​&lt;em&gt;opaque&lt;/em&gt;​ types&lt;sup&gt;(PTX有内置的不透明类型，用于定义纹理、采集器和表面描述符变量。)&lt;/sup&gt; for defining texture, sampler, and surface descriptor variables. These types have named fields similar to structures, but all information about layout, field ordering, base address, and overall size is hidden to a PTX program, hence the term ​&lt;em&gt;opaque&lt;sup&gt;(但是所有不透明类型关于布局、字段顺序、基址和整体大小的信息对于PTX程序都是隐藏的，因此称为不透明类型。)&lt;/sup&gt;&lt;/em&gt;. The use of these opaque types is limited to&lt;sup&gt;(使用这些不透明类型的范围仅限于)&lt;/sup&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Variable definition within global (module) scope and in kernel entry parameter lists.&lt;/li&gt;
+&lt;li&gt;Static initialization of module-scope variables using comma-delimited static assignment expressions for the named members of the type.&lt;/li&gt;
+&lt;li&gt;Referencing textures, samplers, or surfaces via texture and surface load/store instructions (&lt;code&gt;tex&lt;/code&gt;​, &lt;code&gt;suld&lt;/code&gt;​, &lt;code&gt;sust&lt;/code&gt;​, &lt;code&gt;sured&lt;/code&gt;​).&lt;/li&gt;
+&lt;li&gt;Retrieving the value of a named member via query instructions (&lt;code&gt;txq&lt;/code&gt;​, &lt;code&gt;suq&lt;/code&gt;​).&lt;/li&gt;
+&lt;li&gt;Creating pointers to opaque variables using &lt;code&gt;mov&lt;/code&gt;​, e.g., &lt;code&gt;mov.u64 reg, opaque_var;&lt;/code&gt;​. The resulting pointer may be stored to and loaded from memory, passed as a parameter to functions, and de-referenced by texture and surface load, store, and query instructions, but the pointer cannot otherwise be treated as an address, i.e., accessing the pointer with &lt;code&gt;ld&lt;/code&gt;​ and &lt;code&gt;st&lt;/code&gt;​ instructions, or performing pointer arithmetic will result in undefined results.&lt;/li&gt;
+&lt;li&gt;Opaque variables may not appear in initializers, e.g., to initialize a pointer to an opaque variable.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;31-texture-and-surface-properties&#34;&gt;3.1 Texture and Surface Properties
+&lt;/h3&gt;&lt;p&gt;Fields &lt;code&gt;width&lt;/code&gt;​, &lt;code&gt;height&lt;/code&gt;​, and &lt;code&gt;depth&lt;/code&gt;​ specify the size of the texture or surface in number of elements in each dimension.&lt;/p&gt;
+&lt;p&gt;The &lt;code&gt;channel_data_type&lt;/code&gt;​ and &lt;code&gt;channel_order&lt;/code&gt;​ fields specify these properties of the texture or surface using enumeration types corresponding to the source language API. For example, see &lt;a class=&#34;link&#34; href=&#34;https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#channel-data-type-and-channel-order-fields&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Channel Data Type and Channel Order Fields&lt;/a&gt; for the OpenCL enumeration types currently supported in PTX.&lt;/p&gt;
+&lt;h3 id=&#34;32-sampler-properties&#34;&gt;3.2 Sampler Properties
+&lt;/h3&gt;&lt;p&gt;The &lt;code&gt;normalized_coords&lt;/code&gt;​ field indicates whether the texture or surface uses normalized coordinates in the range [0.0, 1.0) instead of unnormalized coordinates in the range [0, N). If no value is specified, the default is set by the runtime system based on the source language.&lt;/p&gt;
+&lt;p&gt;The &lt;code&gt;filter_mode&lt;/code&gt;​ field specifies how the values returned by texture reads are computed based on the input texture coordinates.&lt;/p&gt;
+&lt;p&gt;The &lt;code&gt;addr_mode_{0,1,2}&lt;/code&gt;​ fields define the addressing mode in each dimension, which determine how out-of-range coordinates are handled.&lt;/p&gt;
+&lt;p&gt;See the &lt;em&gt;CUDA C++ Programming Guide&lt;/em&gt; for more details of these properties.&lt;/p&gt;
+&lt;p&gt;​&lt;img src=&#34;http://127.0.0.1:3622/assets/image-20250222150628-2eakxgh.png&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image&#34;
+	
+	
+&gt;​&lt;/p&gt;
+&lt;p&gt;In independent texture mode, the sampler properties are carried in an independent &lt;code&gt;.samplerref&lt;/code&gt;​ variable, and these fields are disabled in the &lt;code&gt;.texref&lt;/code&gt;​ variables. One additional sampler property, &lt;code&gt;force_unnormalized_coords&lt;/code&gt;​, is available in independent texture mode.&lt;/p&gt;
+&lt;p&gt;The &lt;code&gt;force_unnormalized_coords&lt;/code&gt;​ field is a property of &lt;code&gt;.samplerref&lt;/code&gt;​ variables that allows the sampler to override the texture header &lt;code&gt;normalized_coords&lt;/code&gt;​ property. This field is defined only in independent texture mode. When &lt;code&gt;True&lt;/code&gt;​, the texture header setting is overridden and unnormalized coordinates are used; when &lt;code&gt;False&lt;/code&gt;​, the texture header setting is used.&lt;/p&gt;
+&lt;p&gt;The &lt;code&gt;force_unnormalized_coords&lt;/code&gt;​ property is used in compiling OpenCL; in OpenCL, the property of normalized coordinates is carried in sampler headers. To compile OpenCL to PTX, texture headers are always initialized with &lt;code&gt;normalized_coords&lt;/code&gt;​ set to True, and the OpenCL sampler-based &lt;code&gt;normalized_coords&lt;/code&gt;​ flag maps (negated) to the PTX-level &lt;code&gt;force_unnormalized_coords&lt;/code&gt;​ flag.&lt;/p&gt;
+&lt;p&gt;Variables using these types may be declared at module scope or within kernel entry parameter lists. At module scope, these variables must be in the &lt;code&gt;.global&lt;/code&gt;​ state space. As kernel parameters, these variables are declared in the &lt;code&gt;.param&lt;/code&gt;​ state space.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Example&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;.global .texref     my_texture_name;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;.global .samplerref my_sampler_name;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;.global .surfref    my_surface_name;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;When declared at module scope, the types may be initialized using a list of static expressions assigning values to the named members.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Example&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;.global .texref tex1;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;.global .samplerref tsamp1 = { addr_mode_0 = clamp_to_border,
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;                               filter_mode = nearest
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;                             };
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id=&#34;33-channel-data-type-and-channel-order-fields&#34;&gt;3.3 Channel Data Type and Channel Order Fields
+&lt;/h3&gt;&lt;p&gt;The &lt;code&gt;channel_data_type&lt;/code&gt;​ and &lt;code&gt;channel_order&lt;/code&gt;​ fields have enumeration types corresponding to the source language API. Currently, OpenCL is the only source language that defines these fields. &lt;a class=&#34;link&#34; href=&#34;https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#channel-data-type-and-channel-order-fields-opencl-channel-order-definition&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Table 13&lt;/a&gt; and &lt;a class=&#34;link&#34; href=&#34;https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#channel-data-type-and-channel-order-fields-opencl-channel-data-type-definition&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Table 12&lt;/a&gt; show the enumeration values defined in OpenCL version 1.0 for channel data type and channel order.&lt;/p&gt;
+&lt;p&gt;​&lt;img src=&#34;http://127.0.0.1:3622/assets/image-20250222150727-75ijm2w.png&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image&#34;
+	
+	
+&gt;​&lt;/p&gt;
+&lt;p&gt;​&lt;img src=&#34;http://127.0.0.1:3622/assets/image-20250222150740-az3tjv4.png&#34;
+	
+	
+	
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;image&#34;
+	
+	
+&gt;​&lt;/p&gt;
+&lt;h2 id=&#34;4-variables&#34;&gt;4. Variables
+&lt;/h2&gt;&lt;p&gt;In PTX, a variable declaration describes both the variable’s type and its state space&lt;sup&gt;(PTX中的一个变量声明同时描述了变量的类型和其状态空间。)&lt;/sup&gt;. In addition to fundamental types, PTX supports types for simple aggregate objects such as vectors and arrays&lt;sup&gt;(除了基本类型，PTX还支持用于简单聚合对象的类型，如向量和数组)&lt;/sup&gt;&lt;/p&gt;
+&lt;h3 id=&#34;41-variable-declarations&#34;&gt;4.1 Variable Declarations
+&lt;/h3&gt;&lt;p&gt;All storage for data is specified with variable declarations. Every variable must reside in one of the state spaces&lt;sup&gt;(每一个变量都必须驻留在一个state space之中)&lt;/sup&gt; enumerated in the previous section.&lt;/p&gt;
+&lt;p&gt;A variable declaration names the space in which the variable resides, its type and size, its name, an optional array size, an optional initializer, and an optional fixed address for the variable&lt;sup&gt;(变量声明指定了变量所在的空间、类型和大小、名称（前面这些是必须的） 以下是可选的 可选的数组大小、可选的初始化器以及变量的可选固定地址。)&lt;/sup&gt;.&lt;/p&gt;
+&lt;p&gt;Predicate variables may only be declared in the register state space&lt;sup&gt;(谓词变量只能在寄存器state space中声明)&lt;/sup&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Examples&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-gdscript3&#34; data-lang=&#34;gdscript3&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;global&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;u32&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;loc&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;reg&lt;/span&gt;    &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;s32&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;const&lt;/span&gt;  &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;f32&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;bias&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;mf&#34;&gt;1.0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mf&#34;&gt;1.0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;};&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;global&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;u8&lt;/span&gt;  &lt;span class=&#34;n&#34;&gt;bg&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;4&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;};&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;reg&lt;/span&gt;    &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;v4&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;f32&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;accel&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;reg&lt;/span&gt;    &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;pred&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;p&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;q&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;r&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h3 id=&#34;42-vectors&#34;&gt;4.2 Vectors
+&lt;/h3&gt;&lt;p&gt;Limited-length vector types are supported. Vectors of length 2 and 4 of any non-predicate fundamental type can be declared by prefixing the type with .v2​ or ​.v4&lt;sup&gt;(向量的两种，两个元素或者4个元素)&lt;/sup&gt;​. Vectors must be based on a fundamental type, and they may reside in the register space. Vectors cannot exceed 128-bits in length; for example, .v4 .f64&lt;sup&gt;(.v4.f64的意思是四个f64的意思，那么4个f64的总长度就是4*8=32字节（256位）。而PTX要求向量的长度不能超过128位，即16字节)&lt;/sup&gt;​ is not allowed. Three-element vectors may be handled by using a ​.v4​ vector&lt;sup&gt;(三个元素的向量也要用.v4来处理，其中第四个元素提供填充)&lt;/sup&gt;, where the fourth element provides padding. This is a common case for three-dimensional grids, textures, etc.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Examples&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;.global .v4 .f32 V;   // a length-4 vector of floats
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;.shared .v2 .u16 uv;  // a length-2 vector of unsigned ints
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;.global .v4 .b8  v;   // a length-4 vector of bytes
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;By default, vector variables are aligned to a multiple of their overall size​ (vector length times base-type size)&lt;sup&gt;(默认情况下，向量变量按照其整体大小的倍数对齐（向量长度乘以基类型大小）)&lt;/sup&gt;, to enable vector load and store instructions&lt;sup&gt;(有一些需要如此对齐的load 和store指令)&lt;/sup&gt; which require addresses aligned to a multiple of the access size.&lt;/p&gt;
+&lt;h3 id=&#34;43-array-declarations&#34;&gt;4.3 Array Declarations
+&lt;/h3&gt;&lt;p&gt;Array declarations are provided to allow the programmer to reserve space&lt;sup&gt;(数组声明被程序员用于预留空间)&lt;/sup&gt;. To declare an array, the variable name is followed with dimensional declarations&lt;sup&gt;(变量名之后要跟维度声明，和C类似)&lt;/sup&gt; similar to fixed-size array declarations in C. The size of each dimension is a constant expression.&lt;sup&gt;(每个维度的大小都是一个常量表达式)&lt;/sup&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Examples&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;.local  .u16 kernel[19][19];
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;.shared .u8  mailbox[128];
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;The size of the array specifies how many elements should be reserved&lt;sup&gt;(数组的大小指定了应预留多少个元素。)&lt;/sup&gt;. For the declaration of array ​&lt;em&gt;kernel&lt;/em&gt;​ above, 19&lt;em&gt;19 = 361 halfwords are reserved&lt;sup&gt;(在上面的kernel数组声明中，预留了19&lt;/em&gt;19=361 half（.u16）)&lt;/sup&gt;, for a total of 722 bytes.&lt;/p&gt;
+&lt;p&gt;When declared with an initializer, the first dimension of the array may be omitted. The size of the first array dimension is determined by the number of elements in the array initializer.&lt;sup&gt;(当数组声明带有初始化器时，可以省略数组的第一个维度。 就像.global .s32 offset[][2] = { {-1, 0}, {0, -1}, {1, 0}, {0, 1} }; 他这里的声明就省略了第一个维度，只给出了第二个维度2. 此时第一个维度的大小由数组初始化器中的元素个数决定)&lt;/sup&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Examples&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;.global .u32 index[] = { 0, 1, 2, 3, 4, 5, 6, 7 };
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;.global .s32 offset[][2] = { {-1, 0}, {0, -1}, {1, 0}, {0, 1} };
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Array ​&lt;em&gt;index&lt;/em&gt;​ has eight elements, and array ​*offset&lt;sup&gt;(这句话只是对上面例子的一个简单的描述)&lt;/sup&gt;*​ is a 4x2 array.&lt;sup&gt;(这句话只是对上面例子的一个简单的描述)&lt;/sup&gt;&lt;/p&gt;
+&lt;h3 id=&#34;44-initializers&#34;&gt;4.4 Initializers
+&lt;/h3&gt;&lt;p&gt;Declared variables may specify an initial value using a syntax similar to C/C++, where the variable name is followed by an equals sign and the initial value or values for the variable. A scalar takes a single value, while vectors and arrays take nested lists of values inside of curly braces (the nesting matches the dimensionality of the declaration).&lt;/p&gt;
+&lt;p&gt;As in C, array initializers may be incomplete, i.e., the number of initializer elements may be less than the extent of the corresponding array dimension, with remaining array locations initialized to the default value for the specified array type&lt;sup&gt;(和C语言一样，数组初始化器可以是未完成的，即， 初始化元素的数量可能少于相应数组维度的大小 剩余的数组位置将被初始化为指定数组类型的默认值)&lt;/sup&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Examples&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-gdscript3&#34; data-lang=&#34;gdscript3&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;const&lt;/span&gt;  &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;f32&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;vals&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;8&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;mf&#34;&gt;0.33&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mf&#34;&gt;0.25&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mf&#34;&gt;0.125&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;};&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;global&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;s32&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;x&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;][&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;},&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;};&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;is equivalent to&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-gdscript3&#34; data-lang=&#34;gdscript3&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;const&lt;/span&gt;  &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;f32&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;vals&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;8&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;mf&#34;&gt;0.33&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mf&#34;&gt;0.25&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mf&#34;&gt;0.125&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mf&#34;&gt;0.0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mf&#34;&gt;0.0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mf&#34;&gt;0.0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mf&#34;&gt;0.0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mf&#34;&gt;0.0&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;};&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;global&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;s32&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;x&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;][&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;},&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;},&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;};&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;Currently, variable initialization is supported only for constant and global state spaces. Variables in constant and global state spaces with no explicit initializer are initialized to zero by default. Initializers are not allowed in external variable declarations.&lt;/p&gt;
+&lt;p&gt;Variable names appearing in initializers represent the address of the variable; this can be used to statically initialize a pointer to a variable. Initializers may also contain &lt;em&gt;var+offset&lt;/em&gt; expressions, where &lt;em&gt;offset&lt;/em&gt; is a byte offset added to the address of &lt;em&gt;var&lt;/em&gt;. Only variables in &lt;code&gt;.global&lt;/code&gt;​ or &lt;code&gt;.const&lt;/code&gt;​ state spaces may be used in initializers. By default, the resulting address is the offset in the variable’s state space (as is the case when taking the address of a variable with a &lt;code&gt;mov&lt;/code&gt;​ instruction). An operator, &lt;code&gt;generic()&lt;/code&gt;​, is provided to create a generic address for variables used in initializers.&lt;/p&gt;
+&lt;p&gt;Starting PTX ISA version 7.1, an operator &lt;code&gt;mask()&lt;/code&gt;​ is provided, where &lt;code&gt;mask&lt;/code&gt;​ is an integer immediate. The only allowed expressions in the &lt;code&gt;mask()&lt;/code&gt;​ operator are integer constant expression and symbol expression representing address of variable. The &lt;code&gt;mask()&lt;/code&gt;​ operator extracts &lt;code&gt;n&lt;/code&gt;​ consecutive bits from the expression used in initializers and inserts these bits at the lowest position of the initialized variable. The number &lt;code&gt;n&lt;/code&gt;​ and the starting position of the bits to be extracted is specified by the integer immediate &lt;code&gt;mask&lt;/code&gt;​. PTX ISA version 7.1 only supports extracting a single byte starting at byte boundary from the address of the variable. PTX ISA version 7.3 supports Integer constant expression as an operand in the &lt;code&gt;mask()&lt;/code&gt;​ operator.&lt;/p&gt;
+&lt;p&gt;Supported values for &lt;code&gt;mask&lt;/code&gt;​ are: 0xFF, 0xFF00, 0XFF0000, 0xFF000000, 0xFF00000000, 0xFF0000000000, 0xFF000000000000, 0xFF00000000000000.&lt;/p&gt;
 </description>
         </item>
         <item>

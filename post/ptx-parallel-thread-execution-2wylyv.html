@@ -1,0 +1,1631 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="PTX（Parallel Thread Execution） 1 2 3 4 5 6 __device__ __forceinline__ int load_int_from_global(const int* a) { int r; asm volatile(&#34;ld.global.cs.s32 %0, [%1];&#34; : &#34;=r&#34;(r) : &#34;l&#34;(a)); return r; } DASP/src/dasp_f16.h中的例子，用了ptx指令\n\u200d\n这个代码总体的意思是，根据输入的参数a，a是一个指向全局内存数据的指针，\n">
+<meta name="keywords" content="CUDA,PTX,汇编"><title>PTX（Parallel Thread Execution）</title>
+
+<link rel='canonical' href='https://cben484.github.io/post/ptx-parallel-thread-execution-2wylyv.html'>
+
+<link rel="stylesheet" href="/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css"><meta property='og:title' content="PTX（Parallel Thread Execution）">
+<meta property='og:description' content="PTX（Parallel Thread Execution） 1 2 3 4 5 6 __device__ __forceinline__ int load_int_from_global(const int* a) { int r; asm volatile(&#34;ld.global.cs.s32 %0, [%1];&#34; : &#34;=r&#34;(r) : &#34;l&#34;(a)); return r; } DASP/src/dasp_f16.h中的例子，用了ptx指令\n\u200d\n这个代码总体的意思是，根据输入的参数a，a是一个指向全局内存数据的指针，\n">
+<meta property='og:url' content='https://cben484.github.io/post/ptx-parallel-thread-execution-2wylyv.html'>
+<meta property='og:site_name' content='青界'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='CUDA' /><meta property='article:tag' content='PTX' /><meta property='article:tag' content='汇编' /><meta property='article:published_time' content='2024-12-13T11:48:28&#43;08:00'/><meta property='article:modified_time' content='2025-02-23T20:00:02&#43;08:00'/>
+<meta name="twitter:title" content="PTX（Parallel Thread Execution）">
+<meta name="twitter:description" content="PTX（Parallel Thread Execution） 1 2 3 4 5 6 __device__ __forceinline__ int load_int_from_global(const int* a) { int r; asm volatile(&#34;ld.global.cs.s32 %0, [%1];&#34; : &#34;=r&#34;(r) : &#34;l&#34;(a)); return r; } DASP/src/dasp_f16.h中的例子，用了ptx指令\n\u200d\n这个代码总体的意思是，根据输入的参数a，a是一个指向全局内存数据的指针，\n">
+    <link rel="shortcut icon" href="/favicon.ico" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu_4db67dde559c71b8.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🌌</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">青界</a></h1>
+            <h2 class="site-description">这是青的青界</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/cben484'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://twitter.com'
+                        target="_blank"
+                        title="Twitter"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-twitter" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M22 4.01c-1 .49 -1.98 .689 -3 .99c-1.121 -1.265 -2.783 -1.335 -4.38 -.737s-2.643 2.06 -2.62 3.737v1c-3.245 .083 -6.135 -1.395 -8 -4c0 0 -4.182 7.433 4 11c-1.872 1.247 -3.739 2.088 -6 2c3.308 1.803 6.913 2.423 10.034 1.517c3.58 -1.04 6.522 -3.723 7.651 -7.742a13.84 13.84 0 0 0 .497 -3.753c-.002 -.249 1.51 -2.772 1.818 -4.013z" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%85%B3%E4%BA%8E/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/links/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>Links</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+                    
+                        <li id="i18n-switch">  
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M4 5h7" />
+  <path d="M9 3v2c0 4.418 -2.239 8 -5 8" />
+  <path d="M5 9c-.003 2.144 2.952 3.908 6.7 4" />
+  <path d="M12 20l4 -9l4 9" />
+  <path d="M19.1 18h-6.2" />
+</svg>
+
+
+
+                            <select name="language" title="language" onchange="window.location.href = this.selectedOptions[0].value">
+                                
+                                    <option value="https://cben484.github.io/en/" >English</option>
+                                
+                                    <option value="https://cben484.github.io/" selected>简体中文</option>
+                                
+                                    <option value="https://cben484.github.io/ar/" >عربي</option>
+                                
+                            </select>
+                        </li>
+                    
+                
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#1a-highly-multithreaded-coprocessor">1.A Highly Multithreaded Coprocessor</a></li>
+    <li><a href="#2thread-hierarchyptx的线程层次结构和cuda的不一样cuda里面叫做block这里叫做cta真是服了">2.Thread Hierarchy<sup>(ptx的线程层次结构和cuda的不一样，cuda里面叫做block，这里叫做CTA（真是服了）)</sup></a>
+      <ol>
+        <li><a href="#21-cooperative-thread-arrays">2.1 Cooperative Thread Arrays</a></li>
+        <li><a href="#22-cluster-of-cooperative-thread-arrays有block就有block-cluster有cta就有cta-cluster">2.2 Cluster of Cooperative Thread Arrays<sup>(有block就有block cluster，有CTA就有CTA cluster)</sup></a></li>
+        <li><a href="#23-grid-of-clusters有block就有grid他这里写的是grid-of-clusters">2.3 Grid of Clusters<sup>(有block就有grid，他这里写的是grid of clusters)</sup></a></li>
+      </ol>
+    </li>
+    <li><a href="#3-memory-hierarchy累了明天再看这个">3. Memory Hierarchy<sup>(累了，明天再看这个)</sup></a></li>
+  </ol>
+
+  <ol>
+    <li><a href="#1source-format">1.Source Format</a></li>
+    <li><a href="#2commentsptx的注释规则和ccpp基本上是一样的不一样的点勾画出来了">2.Comments<sup>(ptx的注释规则，和C/CPP基本上是一样的，不一样的点勾画出来了)</sup></a></li>
+    <li><a href="#3statements语句">3.Statements<sup>(语句)</sup></a>
+      <ol>
+        <li><a href="#31-directive-statements">3.1 Directive Statements</a></li>
+        <li><a href="#32-instruction-statements操作码操作数操作数以逗号分隔以分号结束">3.2 Instruction Statements<sup>(操作码+操作数（操作数以逗号分隔，以分号结束）)</sup></a></li>
+      </ol>
+    </li>
+    <li><a href="#4identifiers标识符">4.Identifiers<sup>(标识符)</sup></a></li>
+    <li><a href="#5constants">5.Constants</a>
+      <ol>
+        <li><a href="#51-integer-constants">5.1 Integer Constants</a></li>
+        <li><a href="#52-floating-point-constants">5.2 Floating-Point Constants</a></li>
+        <li><a href="#53-predicate-谓词有点陌生的词汇-谓词predicate是一个逻辑或条件判断的术语通常表示一种判断式或条件用于判断某个特定的条件是否成立在编程语言中谓词通常是一个表达式其值为真或假true-或-false-在-ptx-这样的汇编语言中谓词常常用于控制程序的执行流程例如在某些指令的执行上进行条件判断--假设我们有一个简单的条件语句-if-x--5-------执行某些操作--在这里x--5-就是一个谓词它的值是一个布尔值true-或-false如果-x-的值大于-5谓词-x--5-为-true那么就会执行后面的操作如果-x-小于或等于-5谓词为-false操作就不会执行--在-ptx-中的应用-在-ptx-汇编中整数常量可以作为谓词使用具体来说0-被视为-false非零整数比如-1被视为-true例如-setpequ32--p0-r1-0----p0-为-1-时相当于-true表示-r1-是否等于-0-在这里setpequ32-指令比较寄存器-r1-和-0-是否相等如果相等p0-被设置为-1true否则-p0-被设置为-0falsep0-就是一个谓词用来表示条件是否成立constants">5.3 Predicate <sup>(谓词，有点陌生的词汇。 谓词（Predicate）是一个逻辑或条件判断的术语，通常表示一种“判断式”或“条件”，用于判断某个特定的条件是否成立。在编程语言中，谓词通常是一个表达式，其值为真或假（True 或 False）。 在 PTX 这样的汇编语言中，谓词常常用于控制程序的执行流程，例如在某些指令的执行上进行条件判断。  假设我们有一个简单的条件语句： if (x &gt; 5) {     // 执行某些操作 } 在这里，x &gt; 5 就是一个谓词，它的值是一个布尔值（True 或 False）。如果 x 的值大于 5，谓词 x &gt; 5 为 True，那么就会执行后面的操作；如果 x 小于或等于 5，谓词为 False，操作就不会执行。  在 PTX 中的应用： 在 PTX 汇编中，整数常量可以作为谓词使用。具体来说，0 被视为 False，非零整数（比如 1）被视为 True。例如： setp.eq.u32  p0, r1, 0;   // p0 为 1 时，相当于 True，表示 r1 是否等于 0 在这里，setp.eq.u32 指令比较寄存器 $r1 和 0 是否相等，如果相等，p0 被设置为 1（True），否则 p0 被设置为 0（False）。p0 就是一个谓词，用来表示条件是否成立。)</sup>Constants</a></li>
+        <li><a href="#54-constant-expressions">5.4 Constant Expressions</a></li>
+        <li><a href="#55-integer-constant-expression-evaluation">5.5 Integer Constant Expression Evaluation</a></li>
+        <li><a href="#56-summary-of-constant-expression-evaluation-rules">5.6 Summary of Constant Expression Evaluation Rules</a></li>
+      </ol>
+    </li>
+  </ol>
+
+  <ol>
+    <li><a href="#1-state-spaces">1. State Spaces</a>
+      <ol>
+        <li><a href="#11-register-state-space">1.1 Register State Space</a></li>
+        <li><a href="#12-special-register-state-space存了一些预定义的特定平台的寄存器如网格集群cta和线程参数时钟计数器以及性能监控寄存器所有特殊寄存器都是预定义的">1.2 Special Register State Space<sup>(存了一些预定义的特定平台的寄存器，如网格、集群、CTA和线程参数、时钟计数器以及性能监控寄存器。所有特殊寄存器都是预定义的)</sup></a></li>
+        <li><a href="#13-constant-state-space">1.3 Constant State Space</a>
+          <ol>
+            <li><a href="#131-banked-constant-state-spacedeprecated">1.3.1 Banked Constant State Space（deprecated）</a></li>
+          </ol>
+        </li>
+        <li><a href="#14-global-state-space">1.4 Global State Space</a></li>
+        <li><a href="#15-local-state-space">1.5 Local State Space</a></li>
+        <li><a href="#16-parameter-state-space">1.6 Parameter State Space</a>
+          <ol>
+            <li><a href="#161-kernel-function-parameters">1.6.1 Kernel Function Parameters</a></li>
+            <li><a href="#162-kernel-function-parameter-attributes可以用ptr来表明该参数是指向内存的指针还可以指示该指针所指向内存的状态空间和对齐方式">1.6.2 Kernel Function Parameter Attributes<sup>(可以用.ptr来表明该参数是指向内存的指针，还可以指示该指针所指向内存的状态空间和对齐方式)</sup></a></li>
+            <li><a href="#163-kernel-parameter-attributeptr">1.6.3 Kernel Parameter Attribute：.ptr</a></li>
+            <li><a href="#164-device-function-parameters">1.6.4 Device Function Parameters</a></li>
+          </ol>
+        </li>
+        <li><a href="#17-shared-state-space">1.7 Shared State Space</a></li>
+        <li><a href="#18-texture-state-spacedeprecated">1.8 Texture State Space（deprecated）</a></li>
+      </ol>
+    </li>
+    <li><a href="#2-tpyes">2. Tpyes</a>
+      <ol>
+        <li><a href="#21-fundamental-types">2.1 Fundamental Types</a></li>
+        <li><a href="#22-restricted-use-of-sub-word-sizes">2.2 Restricted Use of Sub-Word Sizes</a></li>
+        <li><a href="#23-alternate-floating-point-data-formats">2.3 Alternate Floating-Point Data Formats</a></li>
+        <li><a href="#24-packed-data-types">2.4 Packed Data Types</a>
+          <ol>
+            <li><a href="#241-packed-floating-point-data-types">2.4.1 Packed Floating Point Data Types</a></li>
+            <li><a href="#242-packed-integer-data-types">2.4.2 Packed Integer Data Types</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#3-texture-sampler-and-surface-types似乎与数值计算这个方向没有太大的关系暂且没看但是为了保持ptx学习的完整性还是cv了上去">3. Texture Sampler and Surface Types<sup>(似乎与数值计算这个方向没有太大的关系，暂且没看，但是为了保持PTX学习的完整性，还是CV了上去)</sup></a>
+      <ol>
+        <li><a href="#31-texture-and-surface-properties">3.1 Texture and Surface Properties</a></li>
+        <li><a href="#32-sampler-properties">3.2 Sampler Properties</a></li>
+        <li><a href="#33-channel-data-type-and-channel-order-fields">3.3 Channel Data Type and Channel Order Fields</a></li>
+      </ol>
+    </li>
+    <li><a href="#4-variables">4. Variables</a>
+      <ol>
+        <li><a href="#41-variable-declarations">4.1 Variable Declarations</a></li>
+        <li><a href="#42-vectors">4.2 Vectors</a></li>
+        <li><a href="#43-array-declarations">4.3 Array Declarations</a></li>
+        <li><a href="#44-initializers">4.4 Initializers</a></li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/post/ptx-parallel-thread-execution-2wylyv.html">PTX（Parallel Thread Execution）</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Dec 13, 2024</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 41 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h1 id="ptxparallel-thread-execution">PTX（Parallel Thread Execution）
+</h1><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="n">__device__</span> <span class="n">__forceinline__</span> <span class="ne">int</span> <span class="n">load_int_from_global</span><span class="p">(</span><span class="k">const</span> <span class="ne">int</span><span class="o">*</span> <span class="n">a</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="ne">int</span> <span class="n">r</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">asm</span> <span class="n">volatile</span><span class="p">(</span><span class="s2">&#34;ld.global.cs.s32 %0, [%1];&#34;</span> <span class="p">:</span> <span class="s2">&#34;=r&#34;</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="p">:</span> <span class="s2">&#34;l&#34;</span><span class="p">(</span><span class="n">a</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">r</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>DASP/src/dasp_f16.h中的例子，用了ptx指令</p>
+<p>‍</p>
+<ul>
+<li>
+<p>这个代码总体的意思是，根据输入的参数a，a是一个指向全局内存数据的指针，</p>
+<p>通过调用ptx指令，将这个数据直接存入到寄存器中用了操作数约束&quot;=r(r)&ldquo;将r与寄存器相绑定，所以ptx将数据放入寄存器的时候，r就已经有值了</p>
+<p>此时再返回r，就完成了这个load from global的操作了</p>
+</li>
+<li>
+<p>ld.global.cs.s32：ld.global表示从全局内存中加载数据，cs(cache streaming)表示缓存策略，优化一次性加载数据的性能。s32表示加载的数据类型是32位有符号数。</p>
+</li>
+<li>
+<p>asm是assembly（汇编）的缩写，用于在高层语言（C++或CUDA）中插入底层汇编代码，在CUDA中，用于嵌入PTX汇编指令。</p>
+</li>
+<li>
+<p>volatile是一个修饰符，表示汇编指令可能被修改，防止编译器优化或重新排序</p>
+</li>
+<li>
+<p>asm和volatile组合表示，确保嵌入的汇编代码在任何优化情况下都被执行。</p>
+</li>
+</ul>
+<p>‍</p>
+<p>这里的=r是约束修饰符，将r变量约束到寄存器上，绑定到寄存器上</p>
+<ul>
+<li>
+<p>寄存器约束，=r(r)，r被分配到一个寄存器</p>
+<p>PTX指令会将全局内存中加载的值存储到这个寄存器</p>
+<p>有等号和没有等号是有区别的，=表示输出操作数，该变量的值将在汇编执行后被更新，没有=表示输入操作数，该变量的值在汇编指令中作为只读数据，不会被修改。</p>
+</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">例子：asm volatile(&#34;ld.global.cs.u32 %0, [%1];&#34; : &#34;=r&#34;(r) : &#34;l&#34;(a));
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>内存约束，m，PTX指令将寄存器中的值存储到output指定的内存地址</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">例子：asm volatile(&#34;st.global.u32 [%0], %1;&#34; : : &#34;m&#34;(output), &#34;r&#34;(value));
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>立即数约束，i，表示变量需要绑定到一个立即数（常量），PTX 指令将执行按位左移操作。</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">例子：asm volatile(&#34;shl.b32 %0, %1, %2;&#34; : &#34;=r&#34;(result) : &#34;r&#34;(value), &#34;i&#34;(shift));
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>‍</p>
+<p>在以下两个例子中，出现了有单个冒号和双冒号的情况，多了解了一下：</p>
+<p>这个冒号实质上是用于分隔输出操作数和输入操作数的，前者为输出操作数，后者为输入操作数，在第二例子中，函数实现的功能是store操作，是void没有输出，所以没有输出操作数，自然就形成了两个冒号了。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="n">__device__</span> <span class="n">__forceinline__</span> <span class="n">half</span> <span class="n">load_half_from_global</span><span class="p">(</span><span class="k">const</span> <span class="n">half</span><span class="o">*</span> <span class="n">a</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ushort</span> <span class="n">r</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">asm</span> <span class="n">volatile</span><span class="p">(</span><span class="s2">&#34;ld.global.cs.u16 %0, [%1];&#34;</span> <span class="p">:</span> <span class="s2">&#34;=h&#34;</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="p">:</span> <span class="s2">&#34;l&#34;</span><span class="p">(</span><span class="n">a</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="n">half</span> <span class="o">*</span><span class="n">r_half</span> <span class="o">=</span> <span class="n">reinterpret_cast</span><span class="o">&lt;</span><span class="n">half</span> <span class="o">*&gt;</span><span class="p">(</span><span class="o">&amp;</span><span class="n">r</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="o">*</span><span class="n">r_half</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="n">__device__</span> <span class="n">__forceinline__</span> <span class="n">void</span> <span class="n">store_half_to_global</span><span class="p">(</span><span class="k">const</span> <span class="n">half</span><span class="o">*</span> <span class="n">a</span><span class="p">,</span> <span class="n">half</span> <span class="n">v</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ushort</span> <span class="o">*</span><span class="n">v_u</span> <span class="o">=</span> <span class="n">reinterpret_cast</span><span class="o">&lt;</span><span class="n">ushort</span> <span class="o">*&gt;</span><span class="p">(</span><span class="o">&amp;</span><span class="n">v</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">asm</span> <span class="n">volatile</span><span class="p">(</span><span class="s2">&#34;st.global.cs.u16 [%0], %1;&#34;</span> <span class="p">::</span> <span class="s2">&#34;l&#34;</span><span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="s2">&#34;h&#34;</span><span class="p">(</span><span class="o">*</span><span class="n">v_u</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>‍</p>
+<hr>
+<h1 id="ptx-introduction"><span data-type="text" style="background-color: var(--b3-font-background4);">PTX Introduction</span>
+</h1><p><em>PTX</em>​ defines a virtual machine and ISA for general purpose parallel thread execution. PTX programs are translated at install time to the target hardware instruction set. The PTX-to-GPU translator and driver enable NVIDIA GPUs to <sup>(ptx提供了一个虚拟机和指令集架构，PTX到GPU的编译器和驱动使得英伟达GPU能够作为可编程的并行计算机使用)</sup>​be used as programmable parallel computers.<sup>(ptx提供了一个虚拟机和指令集架构，PTX到GPU的编译器和驱动使得英伟达GPU能够作为可编程的并行计算机使用)</sup></p>
+<p>‍</p>
+<hr>
+<h1 id="ptx-programming-model"><span data-type="text" style="background-color: var(--b3-font-background4);">PTX Programming Model</span>
+</h1><h2 id="1a-highly-multithreaded-coprocessor">1.A Highly Multithreaded Coprocessor
+</h2><p>The GPU is a compute device capable of executing a very large number of threads in parallel. It operates as a coprocessor to the main CPU, or host: In other words, data-parallel, compute-intensive portions of applications running on the host are off-loaded onto the device.</p>
+<p>More precisely, a portion of an application that is executed many times, but independently on different data, can be isolated into a kernel function that is executed on the GPU as many different threads. To that effect, such a function is compiled to the PTX instruction set and the resulting kernel is translated at install time to the target GPU instruction set.</p>
+<h2 id="2thread-hierarchyptx的线程层次结构和cuda的不一样cuda里面叫做block这里叫做cta真是服了">2.Thread Hierarchy<sup>(ptx的线程层次结构和cuda的不一样，cuda里面叫做block，这里叫做CTA（真是服了）)</sup>
+</h2><p>The batch of threads that executes a kernel is organized as a grid. A grid consists of either cooperative thread arrays or clusters of cooperative thread arrays as described in this section and illustrated in <a class="link" href="https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#grid-of-clusters-grid-with-ctas"  target="_blank" rel="noopener"
+    >Figure 1</a> and <a class="link" href="https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#grid-of-clusters-grid-with-clusters"  target="_blank" rel="noopener"
+    >Figure 2</a>. *Cooperative thread arrays (CTAs)<sup>(所以可以直接将CTA视为block，clusters视为block clusters是吧)</sup>*​ implement CUDA thread blocks and clusters implement CUDA thread block clusters.<sup>(所以可以直接将CTA视为block，clusters视为block clusters是吧)</sup></p>
+<h3 id="21-cooperative-thread-arrays">2.1 Cooperative Thread Arrays
+</h3><p>The <em>Parallel Thread Execution (PTX)</em>  programming model is explicitly parallel: a PTX program specifies the execution of a given thread of a parallel thread array. A <em>cooperative thread array</em>, or CTA, is an array of threads that execute a kernel concurrently or in parallel.</p>
+<p>Threads within a CTA can communicate with each other. To coordinate the communication of the threads within the CTA, one can specify synchronization points where threads wait until all threads in the CTA have arrived.<sup>(指出，为了协调CTA内部线程的通信，可以指定同步点。 指明了同步的作用之一是为了CTA内部线程的通信。)</sup></p>
+<p>Each thread has a unique thread identifier within the CTA. Programs use a data parallel decomposition to partition inputs, work, and results across the threads of the CTA. Each CTA thread uses its thread identifier to determine its assigned role, assign specific input and output positions, compute addresses, and select work to perform.<sup>(程序员通过线程标识符，即tid，来控制CTA线程的行为 )</sup> The thread identifier is a three-element vector <code>tid</code>​, (with elements <code>tid.x</code>​, <code>tid.y</code>​, and <code>tid.z</code>​) that specifies the thread’s position within a 1D, 2D, or 3D CTA. Each thread identifier component ranges from zero up to the number of thread ids in that CTA dimension.</p>
+<p>Each CTA has a 1D, 2D, or 3D shape specified by a three-element vector ​ntid​ (with elements ​ntid.x​, ​ntid.y​, and ​ntid.z​). <sup>(ntid指定了CTA的shape )</sup>The vector <code>ntid</code>​ specifies the number of threads in each CTA dimension.</p>
+<p>Threads within a CTA execute in SIMT (single-instruction, multiple-thread) fashion in groups called ​<em>warps</em>​.<sup>(这句话明确说了，warp里面的线程的执行方式就是SIMT)</sup> A <em>warp</em> is a maximal subset of threads from a single CTA, such that the threads execute the same instructions at the same time. Threads within a warp are sequentially numbered. The warp size is a machine-dependent constant. Typically, a warp has 32 threads. <sup>(他这样说的，感觉warp的大小有可能随着未来的发展而变化)</sup>Some applications may be able to maximize performance with knowledge of the warp size, so PTX includes a run-time immediate constant, <code>WARP_SZ</code>​, which may be used in any instruction where an immediate operand is allowed.</p>
+<h3 id="22-cluster-of-cooperative-thread-arrays有block就有block-cluster有cta就有cta-cluster">2.2 Cluster of Cooperative Thread Arrays<sup>(有block就有block cluster，有CTA就有CTA cluster)</sup>
+</h3><p>Cluster is a group of CTAs that run concurrently or in parallel and can synchronize and communicate with each other via shared memory. The executing CTA has to make sure that the shared memory of the peer CTA exists before communicating with it via shared memory and the peer CTA hasn’t exited before completing the shared memory operation.</p>
+<p>Threads within the different CTAs in a cluster can synchronize and communicate with each other via shared memory. Cluster-wide barriers can be used to synchronize all the threads within the cluster. Each CTA in a cluster has a unique CTA identifier within its cluster  <em><em>(<strong>​</strong></em>cluster_ctaid</em><strong>​ <strong>)</strong> . Each cluster of CTAs has 1D, 2D or 3D shape specified by the parameter <em>cluster_nctaid</em>. Each CTA in the cluster also has a unique CTA identifier  <em><em>(<strong>​</strong></em>cluster_ctarank</em></strong>​ <strong>)</strong>  across all dimensions. The total number of CTAs across all the dimensions in the cluster is specified by <em><strong>cluster_nctarank</strong></em>. Threads may read and use these values through <u>predefined, read-only special registers </u>​<u>​<code>%cluster_ctaid</code>​</u>​<u>, </u>​<u>​<code>%cluster_nctaid</code>​</u>​<u>, </u>​<u>​<code>%cluster_ctarank</code>​</u>​<u>, </u>​<u>​<code>%cluster_nctarank</code>​</u>​.</p>
+<p>Cluster level is applicable only on target architecture <code>sm_90</code>​ or higher. Specifying cluster level during launch time is optional. If the user specifies the cluster dimensions at launch time then it will be treated as explicit cluster launch, otherwise it will be treated as implicit cluster launch with default dimension 1x1x1. PTX provides read-only special register <code>%is_explicit_cluster</code>​ to differentiate between explicit and implicit cluster launch.</p>
+<h3 id="23-grid-of-clusters有block就有grid他这里写的是grid-of-clusters">2.3 Grid of Clusters<sup>(有block就有grid，他这里写的是grid of clusters)</sup>
+</h3><p>There is a maximum number of threads that a CTA can contain and a maximum number of CTAs that a cluster can contain. However, clusters with CTAs that execute the same kernel can be batched together into a grid of clusters, so that the total number of threads that can be launched in a single kernel invocation is very large. <sup>(处理相同内核的CTA可以批处理到一起，形成一个集群网络，从而使得单次内核调用中可启动的总线程数非常大)</sup>​This comes at the expense of reduced thread communication and synchronization, because threads in different clusters cannot communicate and synchronize with each other.<sup>(只有集群内部的线程才是可以通信和同步的，集群之间无法做到，所以集群网络形成的条件是以减少线程间通信和同步为代价的)</sup></p>
+<p>Each cluster has a unique cluster identifier (<em><strong>clusterid</strong></em>) within a grid of clusters. Each grid of clusters has a 1D, 2D , or 3D shape specified by the parameter <em><strong>nclusterid</strong></em>. Each grid also has a unique temporal grid identifier (<em><strong>gridid</strong></em>). Threads may read and use these values through <u>predefined, read-only special registers </u>​<u>​<code>%tid</code>​</u>​<u>, </u>​<u>​<code>%ntid</code>​</u>​<u>, </u>​<u>​<code>%clusterid</code>​</u>​<u>, </u>​<u>​<code>%nclusterid</code>​</u>​<u>, and </u>​<u>​<code>%gridid</code>​</u>​.</p>
+<p>Each CTA has a unique identifier (<em><strong>ctaid</strong></em>) within a grid. Each grid of CTAs has 1D, 2D, or 3D shape specified by the parameter <em><strong>nctaid</strong></em>. Thread may use and read these values through <u>predefined, read-only special registers </u>​<u>​<code>%ctaid</code>​</u>​<u> and </u>​<u>​<code>%nctaid</code>​</u>​.</p>
+<p>Each kernel is executed as a batch of threads organized as a grid of clusters consisting of CTAs where cluster is optional level and is applicable only for target architectures <code>sm_90</code>​ and higher. <a class="link" href="https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#grid-of-clusters-grid-with-ctas"  target="_blank" rel="noopener"
+    >Figure 1</a> shows a grid consisting of CTAs and <a class="link" href="https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#grid-of-clusters-grid-with-clusters"  target="_blank" rel="noopener"
+    >Figure 2</a> shows a grid consisting of clusters.</p>
+<p>Grids may be launched with dependencies between one another - a grid may be a dependent grid and/or a prerequisite grid. To understand how grid dependencies may be defined, refer to the section on ​<em>CUDA Graphs</em>​ in the ​*Cuda Programming Guide<sup>(这样一看，似乎可以起不止一个grid)</sup>*​.<sup>(这样一看，似乎可以起不止一个grid)</sup></p>
+<h2 id="3-memory-hierarchy累了明天再看这个">3. Memory Hierarchy<sup>(累了，明天再看这个)</sup>
+</h2><p>PTX threads may access data from multiple state spaces during their execution as illustrated by <a class="link" href="https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#memory-hierarchy-memory-hierarchy-with-clusters"  target="_blank" rel="noopener"
+    >Figure 3</a> where cluster level is introduced from target architecture <code>sm_90</code>​ onwards. Each thread has a private local memory. Each thread block (CTA) has a shared memory visible to all threads of the block and to all active blocks in the cluster and with the same lifetime as the block. Finally, all threads have access to the same global memory.</p>
+<p>There are additional state spaces accessible by all threads: the constant, param, texture, and surface state spaces. Constant and texture memory are read-only; surface memory is readable and writable. The global, constant, param, texture, and surface state spaces are optimized for different memory usages. For example, texture memory offers different addressing modes as well as data filtering for specific data formats. Note that texture and surface memory is cached, and within the same kernel call, the cache is not kept coherent with respect to global memory writes and surface memory writes, so any texture fetch or surface read to an address that has been written to via a global or a surface write in the same kernel call returns undefined data. In other words, a thread can safely read some texture or surface memory location only if this memory location has been updated by a previous kernel call or memory copy, but not if it has been previously updated by the same thread or another thread from the same kernel call.</p>
+<p>The global, constant, and texture state spaces are persistent across kernel launches by the same application.</p>
+<p>Both the host and the device maintain their own local memory, referred to as <em>host memory</em> and <em>device memory</em>, respectively. The device memory may be mapped and read or written by the host, or, for more efficient transfer, copied from the host memory through optimized API calls that utilize the device’s high-performance <em>Direct Memory Access (DMA)</em>  engine.</p>
+<hr>
+<h1 id="ptx-syntax"><span data-type="text" style="background-color: var(--b3-font-background4);">PTX Syntax</span>
+</h1><p>PTX programs are a collection of text source modules (files). PTX source modules have an   <strong><u></u></strong>   <strong><u>assembly-language style<sup>(汇编风格 )</sup></strong></u> syntax with instruction <em><strong>operation codes</strong></em> and <em><strong>operands</strong></em>. Pseudo-operations specify symbol and addressing management. <strong>The ptxas optimizing backend compiler<sup>(ptxas后端优化编译器，整体是一个名词，这个编译器优化并汇编了PTX源模块来生成对应的二进制对象文件（我估计就是sass）)</sup></strong> optimizes and assembles PTX source modules to produce corresponding binary object files.</p>
+<h2 id="1source-format">1.Source Format
+</h2><p>Source modules are ASCII text. Lines are separated by the newline character <sup>(换行符 )</sup>(<code>\n</code>​).</p>
+<p>All whitespace characters are equivalent; whitespace is ignored except for its use in separating tokens in the language.<sup>(所有空白符是等效的，空白符只在分隔语言中的标记时起作用。)</sup></p>
+<p>The C preprocessor cpp<sup>(这里的cpp应该指的是C preprocessor，pp是来自于preprocessor)</sup> may be used to process PTX source modules. Lines beginning with <code>#</code>​ are preprocessor directives<sup>(directives好像是指令的意思，在ptx里面似乎特指那些预处理指令，在4.3里面有提到directive or instruction，说明这俩是有区分的，在4.3在细说区分)</sup>. The following are common preprocessor directives:</p>
+<p>​<code>#include</code>​, <code>#define</code>​, <code>#if</code>​, <code>#ifdef</code>​, <code>#else</code>​, <code>#endif</code>​, <code>#line</code>​, <code>#file</code>​</p>
+<p><em>C: A Reference Manual</em> by Harbison and Steele provides a good description of the C preprocessor.</p>
+<p>PTX is case sensitive and uses lowercase for keywords.<sup>(ptx大小写敏感，关键字都是小写)</sup></p>
+<p>Each PTX module must begin with a ​.version​ directive specifying the PTX language version, followed by a ​.target​ directive specifying the target architecture assumed.<sup>(每个ptx模块都是由.version开头，指定ptx版本，后面跟一个.target指明目标架构)</sup> See <a class="link" href="https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#ptx-module-directives"  target="_blank" rel="noopener"
+    >PTX Module Directives</a> for a more information on these directives.</p>
+<h2 id="2commentsptx的注释规则和ccpp基本上是一样的不一样的点勾画出来了">2.Comments<sup>(ptx的注释规则，和C/CPP基本上是一样的，不一样的点勾画出来了)</sup>
+</h2><p>Comments in PTX follow C/C++ syntax, using non-nested <code>/*</code>​ and <code>*/</code>​ for comments that may span multiple lines, and using <code>//</code>​ to begin a comment that extends up to the next newline character, which terminates the current line.  <u><strong>Comments cannot occur within character constants, string literals, or within other comments.</strong></u></p>
+<p>Comments in PTX are treated as whitespace.</p>
+<h2 id="3statements语句">3.Statements<sup>(语句)</sup>
+</h2><p>A PTX statement is either a directive or an instruction.<sup>(这里对directive和instruction做了一个区分 1. Directive（指令） 定义：Directive 是 PTX 代码中的预处理指令，它告诉编译器如何处理代码，或者定义一些编译时的设置。Directive 本身不执行任何计算，它们通常用于设定数据、寄存器等的属性，或者控制代码生成的过程。 作用：它们通常用于定义变量、注册信息、内存空间等设置。例如，定义寄存器、全局内存、共享内存等。 常见的 PTX directive 示例： .reg：用于定义寄存器。 .global：用于定义全局内存。 .shared：用于定义共享内存。 .const：用于定义常量内存。 示例：  .reg .b32 r1, r2;  // 定义32位的寄存器r1和r2 .global .f32 array[N];  // 定义一个名为array的全局浮点数组  2. Instruction（指令） 定义：Instruction 是 PTX 中的计算或操作指令，它执行具体的操作或计算任务。指令是程序实际执行的代码，涉及算术运算、内存访问、控制流等。 作用：它们执行各种类型的操作，如加载/存储、算术计算、控制流指令（跳转、条件判断）等。 常见的 PTX instruction 示例： mov：移动数据。 add：加法运算。 ld.global：全局内存加载。 shl：按位左移。 示例：  mov.b32 r1, %tid.x;  // 将线程ID的x部分存入寄存器r1 add.f32 r2, r2, 0.5; // 将寄存器r2的值加上0.5 shl.b32 r1, r1, 2;   // 将寄存器r1的值左移2位  主要区别： Directive 是编译时的指令，主要用于设置或声明变量、寄存器、内存等，它们并不执行实际的计算。 Instruction 是执行时的指令，它们执行具体的计算任务或内存操作，是程序执行的核心部分。 总结来说，directive 主要负责代码的配置和声明，而 instruction 则是实际的操作指令，控制程序的计算过程。)</sup> Statements begin with an optional label<sup>(以可选的标签开头)</sup> and end with a semicolon.<sup>(以分号结尾 )</sup></p>
+<p><strong>Examples</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">        .reg     .b32 r1, r2;
+</span></span><span class="line"><span class="cl">        .global  .f32  array[N];
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">start:  mov.b32   r1, %tid.x;
+</span></span><span class="line"><span class="cl">        shl.b32   r1, r1, 2;          // shift thread id by 2 bits
+</span></span><span class="line"><span class="cl">        ld.global.b32 r2, array[r1];  // thread[tid] gets array[tid]
+</span></span><span class="line"><span class="cl">        add.f32   r2, r2, 0.5;        // add 1/2
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="31-directive-statements">3.1 Directive Statements
+</h3><p>Directive keywords begin with a dot, so no conflict is possible with user-defined identifiers. The directives in PTX are listed in <a class="link" href="https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#directive-statements-ptx-directives"  target="_blank" rel="noopener"
+    >Table 1</a> and described in <a class="link" href="https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#state-spaces-types-and-variables"  target="_blank" rel="noopener"
+    >State Spaces, Types, and Variables</a> and <a class="link" href="https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#directives"  target="_blank" rel="noopener"
+    >Directives</a>.</p>
+<p>​<img src="http://127.0.0.1:3622/assets/image-20250217211249-rpbipdu.png"
+	
+	
+	
+	loading="lazy"
+	
+		alt="image"
+	
+	
+>​</p>
+<h3 id="32-instruction-statements操作码操作数操作数以逗号分隔以分号结束">3.2 Instruction Statements<sup>(操作码+操作数（操作数以逗号分隔，以分号结束）)</sup>
+</h3><p>Instructions are formed from an instruction opcode followed by a comma-separated<sup>(以逗号分隔)</sup> list of zero or more operands, and terminated with a semicolon<sup>(以分号结尾)</sup>. Operands may be register variables, constant expressions, address expressions, or label names. Instructions have an optional guard predicate which controls conditional execution. The guard predicate follows the optional label and precedes the opcode, and is written as <code>@p</code>​, where <code>p</code>​ is a predicate register. The guard predicate may be optionally negated, written as <code>@!p</code>​.</p>
+<p>The destination operand is first, followed by source operands.</p>
+<p>Instruction keywords are listed in <a class="link" href="https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#instruction-statements-reserved-instruction-keywords-new"  target="_blank" rel="noopener"
+    >Table 2</a>. All instruction keywords are reserved tokens in PTX<sup>(太长了，我没截下来，ctrl点Table2就可以看到了)</sup>.</p>
+<h2 id="4identifiers标识符">4.Identifiers<sup>(标识符)</sup>
+</h2><p>User-defined identifiers follow extended C++ rules: they either start with a letter followed by zero or more letters, digits, underscore, or dollar characters; or they start with an underscore, dollar, or percentage character followed by one or more letters, digits, underscore, or dollar characters:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">followsym:   [a-zA-Z0-9_$]
+</span></span><span class="line"><span class="cl">identifier:  [a-zA-Z]{followsym}* | {[_$%]{followsym}+
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>PTX does not specify a maximum length for identifiers and suggests that all implementations support a minimum length of at least 1024 characters.</p>
+<p>Many high-level languages such as C and C++ follow similar rules for identifier names, except that the percentage sign is not allowed. PTX allows the percentage sign as the first character of an identifier. The percentage sign can be used to avoid name conflicts, e.g., between user-defined variable names and compiler-generated names.</p>
+<p>PTX predefines one constant and a small number of special registers that begin with the percentage sign<sup>(PTX以百分号开头预定义了一些特殊寄存器)</sup>, listed in <a class="link" href="https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#identifiers-predefined-identifiers"  target="_blank" rel="noopener"
+    >Table 3</a>.</p>
+<p>​<img src="http://127.0.0.1:3622/assets/image-20250218100058-0hk4byx.png"
+	
+	
+	
+	loading="lazy"
+	
+		alt="image"
+	
+	
+>​</p>
+<h2 id="5constants">5.Constants
+</h2><p>PTX supports integer and floating-point constants and constant expressions. These constants may be used in data initialization and as operands to instructions. Type checking rules remain the same for integer, floating-point, and bit-size types. For predicate-type data and instructions, integer constants are allowed and are interpreted as in C, i.e., zero values are <code>False</code>​ and non-zero values are <code>True</code>​.</p>
+<h3 id="51-integer-constants">5.1 Integer Constants
+</h3><p>Integer constants are 64-bits in size and are either signed or unsigned, i.e., every integer constant has type <code>.s64</code>​ or <code>.u64</code>​. The signed/unsigned nature of an integer constant is needed to correctly evaluate constant expressions containing operations such as division and ordered comparisons, where the behavior of the operation depends on the operand types. When used in an instruction or data initialization, each integer constant is converted to the appropriate size based on the data or instruction type at its use.</p>
+<p>Integer literals may be written in decimal, hexadecimal, octal, or binary<sup>(十进制、十六进制、八进制或二进制)</sup> notation. The syntax follows that of C. Integer literals may be followed immediately by the letter <code>U</code>​ to indicate that the literal is unsigned.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">hexadecimal literal:  0[xX]{hexdigit}+U?
+</span></span><span class="line"><span class="cl">octal literal:        0{octal digit}+U?
+</span></span><span class="line"><span class="cl">binary literal:       0[bB]{bit}+U?
+</span></span><span class="line"><span class="cl">decimal literal       {nonzero-digit}{digit}*U?
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Integer literals are non-negative and have a type determined by their magnitude and optional type suffix as follows: literals are signed (<code>.s64</code>​) unless the value cannot be fully represented in <code>.s64</code>​ or the unsigned suffix is specified, in which case the literal is unsigned (<code>.u64</code>​).</p>
+<p>The predefined integer constant <code>WARP_SZ</code>​ specifies the number of threads per warp for the target platform; to date, all target architectures have a <code>WARP_SZ</code>​ value of 32.</p>
+<h3 id="52-floating-point-constants">5.2 Floating-Point Constants
+</h3><p>Floating-point constants are represented as 64-bit double-precision values, and all floating-point constant expressions are evaluated using 64-bit double precision arithmetic. The only exception is the 32-bit hex notation for expressing an exact single-precision floating-point value; such values retain their exact 32-bit single-precision value and may not be used in constant expressions. Each 64-bit floating-point constant is converted to the appropriate floating-point size based on the data or instruction type at its use.</p>
+<p>Floating-point literals may be written with an optional decimal point and an optional signed exponent. Unlike C and C++, there is no suffix letter to specify size; literals are always represented in 64-bit double-precision format.</p>
+<p>PTX includes a second representation of floating-point constants for specifying the exact machine representation using a hexadecimal constant. To specify IEEE 754 double-precision floating point values, the constant begins with <sup>(双精度浮点数 是0d或者0D开头，后面跟16个16进制 单精度浮点数 是0f或者0F开头，后面跟8个16进制)</sup>​0d​ or ​0D​ followed by 16 hex digits. To specify IEEE 754 single-precision floating point values, the constant begins with ​0f​ or ​0F<sup>(双精度浮点数 是0d或者0D开头，后面跟16个16进制 单精度浮点数 是0f或者0F开头，后面跟8个8进制)</sup>​ followed by 8 hex digits.<sup>(双精度浮点数 是0d或者0D开头，后面跟16个16进制 单精度浮点数 是0f或者0F开头，后面跟8个8进制)</sup></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">0[fF]{hexdigit}{8}      // single-precision floating point
+</span></span><span class="line"><span class="cl">0[dD]{hexdigit}{16}     // double-precision floating point
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>Example</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">mov.f32  $f3, 0F3f800000;       //  1.0
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="53-predicate-谓词有点陌生的词汇-谓词predicate是一个逻辑或条件判断的术语通常表示一种判断式或条件用于判断某个特定的条件是否成立在编程语言中谓词通常是一个表达式其值为真或假true-或-false-在-ptx-这样的汇编语言中谓词常常用于控制程序的执行流程例如在某些指令的执行上进行条件判断--假设我们有一个简单的条件语句-if-x--5-------执行某些操作--在这里x--5-就是一个谓词它的值是一个布尔值true-或-false如果-x-的值大于-5谓词-x--5-为-true那么就会执行后面的操作如果-x-小于或等于-5谓词为-false操作就不会执行--在-ptx-中的应用-在-ptx-汇编中整数常量可以作为谓词使用具体来说0-被视为-false非零整数比如-1被视为-true例如-setpequ32--p0-r1-0----p0-为-1-时相当于-true表示-r1-是否等于-0-在这里setpequ32-指令比较寄存器-r1-和-0-是否相等如果相等p0-被设置为-1true否则-p0-被设置为-0falsep0-就是一个谓词用来表示条件是否成立constants">5.3 Predicate <sup>(谓词，有点陌生的词汇。 谓词（Predicate）是一个逻辑或条件判断的术语，通常表示一种“判断式”或“条件”，用于判断某个特定的条件是否成立。在编程语言中，谓词通常是一个表达式，其值为真或假（True 或 False）。 在 PTX 这样的汇编语言中，谓词常常用于控制程序的执行流程，例如在某些指令的执行上进行条件判断。  假设我们有一个简单的条件语句： if (x &gt; 5) {     // 执行某些操作 } 在这里，x &gt; 5 就是一个谓词，它的值是一个布尔值（True 或 False）。如果 x 的值大于 5，谓词 x &gt; 5 为 True，那么就会执行后面的操作；如果 x 小于或等于 5，谓词为 False，操作就不会执行。  在 PTX 中的应用： 在 PTX 汇编中，整数常量可以作为谓词使用。具体来说，0 被视为 False，非零整数（比如 1）被视为 True。例如： setp.eq.u32  p0, r1, 0;   // p0 为 1 时，相当于 True，表示 r1 是否等于 0 在这里，setp.eq.u32 指令比较寄存器 $r1 和 0 是否相等，如果相等，p0 被设置为 1（True），否则 p0 被设置为 0（False）。p0 就是一个谓词，用来表示条件是否成立。)</sup>Constants
+</h3><p>In PTX, integer constants may be used as predicates. For predicate-type data initializers and instruction operands, integer constants are interpreted as in C, i.e., zero values are <code>False</code>​ and non-zero values are <code>True</code>​.</p>
+<h3 id="54-constant-expressions">5.4 Constant Expressions
+</h3><p>In PTX, constant expressions are formed using operators as in C and are evaluated using rules similar to those in C, but simplified by restricting types and sizes, removing most casts<sup>(类型转换)</sup>, and defining full semantics<sup>(完整的语义)</sup> to eliminate cases where expression evaluation in C is implementation dependent.</p>
+<p>Constant expressions are formed from constant literals, unary plus and minus, basic arithmetic operators (addition, subtraction, multiplication, division), comparison operators, the conditional ternary operator ( <code>?:</code>​ ), and parentheses. Integer constant expressions also allow unary logical negation (<code>!</code>​), bitwise complement (<code>~</code>​), remainder (<code>%</code>​), shift operators (<code>&lt;&lt;</code>​ and <code>&gt;&gt;</code>​), bit-type operators (<code>&amp;</code>​, <code>|</code>​, and <code>^</code>​), and logical operators (<code>&amp;&amp;</code>​, <code>||</code>​).</p>
+<p>Constant expressions in PTX do not support casts between integer and floating-point.</p>
+<p>Constant expressions are evaluated using the same operator precedence<sup>(运算符优先级)</sup> as in C. <a class="link" href="https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#constant-expressions-operator-precedence"  target="_blank" rel="noopener"
+    >Table 4</a> gives operator precedence and associativity. Operator precedence is highest for unary operators<sup>(一元运算符是最高的优先级)</sup> and decreases with each line in the chart. Operators on the same line have the same precedence and are evaluated right-to-left for unary operators and left-to-right for binary operators.<sup>(对于一元运算符求值顺序是从右到左 对于二元运算符求值顺序是从左到右)</sup></p>
+<p>​<img src="http://127.0.0.1:3622/assets/image-20250218112505-ba3ao6d.png"
+	
+	
+	
+	loading="lazy"
+	
+		alt="image"
+	
+	
+>​</p>
+<h3 id="55-integer-constant-expression-evaluation">5.5 Integer Constant Expression Evaluation
+</h3><p>Integer constant expressions are evaluated at compile time according to a set of rules that determine the type (signed <code>.s64</code>​ versus unsigned <code>.u64</code>​) of each sub-expression. These rules are based on the rules in C, but they’ve been simplified to apply only to 64-bit integers, and behavior is fully defined in all cases (specifically, for remainder and shift operators).</p>
+<ul>
+<li>
+<p>Literals are signed unless unsigned is needed to prevent overflow, or unless the literal uses a <code>U</code>​ suffix. For example:</p>
+<ul>
+<li>​<code>42</code>​, <code>0x1234</code>​, <code>0123</code>​ are signed.</li>
+<li>​<code>0xfabc123400000000</code>​, <code>42U</code>​, <code>0x1234U</code>​ are unsigned.</li>
+</ul>
+</li>
+<li>
+<p>Unary plus and minus preserve the type of the input operand. For example:</p>
+<ul>
+<li>​<code>+123</code>​, <code>-1</code>​, <code>-(-42)</code>​ are signed.</li>
+<li>​<code>-1U</code>​, <code>-0xfabc123400000000</code>​ are unsigned.</li>
+</ul>
+</li>
+<li>
+<p>Unary logical negation (<code>!</code>​) produces a signed result with value <code>0</code>​ or <code>1</code>​.</p>
+</li>
+<li>
+<p>Unary bitwise complement (<code>~</code>​) interprets the source operand as unsigned and produces an unsigned result.</p>
+</li>
+<li>
+<p>Some binary operators require normalization of source operands. This normalization is known as <em>the usual arithmetic conversions</em> and simply converts both operands to unsigned type if either operand is unsigned.</p>
+</li>
+<li>
+<p>Addition, subtraction, multiplication, and division perform the usual arithmetic conversions and produce a result with the same type as the converted operands. That is, the operands and result are unsigned if either source operand is unsigned, and is otherwise signed.</p>
+</li>
+<li>
+<p>Remainder (<code>%</code>​) interprets the operands as unsigned. Note that this differs from C, which allows a negative divisor but defines the behavior to be implementation dependent.</p>
+</li>
+<li>
+<p>Left and right shift interpret the second operand as unsigned and produce a result with the same type as the first operand. Note that the behavior of right-shift is determined by the type of the first operand: right shift of a signed value is arithmetic and preserves the sign, and right shift of an unsigned value is logical and shifts in a zero bit.</p>
+</li>
+<li>
+<p>AND (<code>&amp;</code>​), OR (<code>|</code>​), and XOR (<code>^</code>​) perform the usual arithmetic conversions and produce a result with the same type as the converted operands.</p>
+</li>
+<li>
+<p>AND_OP (<code>&amp;&amp;</code>​), OR_OP (<code>||</code>​), Equal (<code>==</code>​), and Not_Equal (<code>!=</code>​) produce a signed result. The result value is 0 or 1.</p>
+</li>
+<li>
+<p>Ordered comparisons (<code>&lt;</code>​, <code>&lt;=</code>​, <code>&gt;</code>​, <code>&gt;=</code>​) perform the usual arithmetic conversions on source operands and produce a signed result. The result value is <code>0</code>​ or <code>1</code>​.</p>
+</li>
+<li>
+<p>Casting of expressions to signed or unsigned is supported using (<code>.s64</code>​) and (<code>.u64</code>​) casts.</p>
+</li>
+<li>
+<p>For the conditional operator ( <code>? :</code>​ ) , the first operand must be an integer, and the second and third operands are either both integers or both floating-point. The usual arithmetic conversions are performed on the second and third operands, and the result type is the same as the converted type.</p>
+</li>
+</ul>
+<h3 id="56-summary-of-constant-expression-evaluation-rules">5.6 Summary of Constant Expression Evaluation Rules
+</h3><p><a class="link" href="https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#summary-of-constant-expression-evaluation-rules-constant-expression-evaluation-rules"  target="_blank" rel="noopener"
+    >Table 5</a> contains a summary <sup>(焯，有这个总结不早说，前面白看那么久)</sup>of the constant expression evaluation rules.</p>
+<p>​<img src="http://127.0.0.1:3622/assets/image-20250218114420-gvqyw33.png"
+	
+	
+	
+	loading="lazy"
+	
+		alt="image"
+	
+	
+>​</p>
+<p>‍</p>
+<hr>
+<h1 id="ptx-state-spacestypesand-variables"><span data-type="text" style="background-color: var(--b3-font-background4);">PTX State Spaces，Types，and Variables</span>
+</h1><p>While the specific resources available in a given target GPU will vary, the kinds of resources will be common across platforms, and these resources are abstracted in PTX through ​**<u>state spaces**</u>​ and ​**data types<sup>(PTX中通过状态空间和数据类型来抽象资源)</sup>**​.<sup>(PTX中通过状态空间和数据类型来抽象资源)</sup></p>
+<h2 id="1-state-spaces">1. State Spaces
+</h2><p>A state space is a storage area with particular characteristics. All variables reside in some state space<sup>(所有的变量都驻留在某一个状态空间里面)</sup>. The characteristics of a state space include its size, addressability, access speed, access rights, and level of sharing between threads.<sup>(state space（状态空间）的特性)</sup></p>
+<p>The state spaces defined in PTX are a byproduct of parallel programming and graphics programming. The list of state spaces is shown in <a class="link" href="https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#state-spaces-state-spaces-tab"  target="_blank" rel="noopener"
+    >Table 6</a>,and properties of state spaces are shown in <a class="link" href="https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#state-spaces-properties-state-spaces"  target="_blank" rel="noopener"
+    >Table 7</a>.</p>
+<p>​<img src="http://127.0.0.1:3622/assets/image-20250218115657-eprgpit.png"
+	
+	
+	
+	loading="lazy"
+	
+		alt="image"
+	
+	
+>​</p>
+<p>​<img src="http://127.0.0.1:3622/assets/image-20250218115713-s7q3swh.png"
+	
+	
+	
+	loading="lazy"
+	
+		alt="image"
+	
+	
+>​</p>
+<h3 id="11-register-state-space">1.1 Register State Space
+</h3><p>Registers (<code>.reg</code>​ state space) are fast storage locations. The number of registers is limited, and will vary from platform to platform. When the limit is exceeded, register variables will be spilled to memory, causing changes in performance. For each architecture, there is a recommended maximum number of registers to use (see the <em>CUDA Programming Guide</em> for details).</p>
+<p>Registers may be typed (signed integer, unsigned integer, floating point, predicate) or untyped. Register size is restricted; aside from predicate registers which are 1-bit, scalar registers have a width of 8-, 16-, 32-, 64-, or 128-bits, and vector registers have a width of 16-, 32-, 64-, or 128-bits. The most common use of 8-bit registers is with <code>ld</code>​, <code>st</code>​, and <code>cvt</code>​ instructions, or as elements of vector tuples.</p>
+<p>Registers differ from the other state spaces in that they are not fully addressable<sup>(寄存器状态空间和其他状态空间的不同之处在于它们不可完全寻址)</sup>, i.e., it is not possible to refer to the address of a register<sup>(不能引用寄存器的地址)</sup>. When compiling to use the Application Binary Interface (ABI), register variables are restricted to function scope and may not be declared at module scope<sup>(寄存器变量被限制到函数范围中，不能在模块范围中引用)</sup>. When compiling legacy PTX code (ISA versions prior to 3.0) containing module-scoped <code>.reg</code>​ variables, the compiler silently disables use of the ABI. Registers may have alignment boundaries<sup>(边界对齐)</sup> required by multi-word loads and stores.</p>
+<h3 id="12-special-register-state-space存了一些预定义的特定平台的寄存器如网格集群cta和线程参数时钟计数器以及性能监控寄存器所有特殊寄存器都是预定义的">1.2 Special Register State Space<sup>(存了一些预定义的特定平台的寄存器，如网格、集群、CTA和线程参数、时钟计数器以及性能监控寄存器。所有特殊寄存器都是预定义的)</sup>
+</h3><p>The special register (<code>.sreg</code>​) state space holds predefined, platform-specific registers, such as grid, cluster, CTA, and thread parameters, clock counters, and performance monitoring registers. All special registers are predefined.</p>
+<h3 id="13-constant-state-space">1.3 Constant State Space
+</h3><p>The constant (​.const​) state space is a read-only memory initialized by the host<sup>(常量内促是由主机初始化的常量内存，居然是主机初始化的)</sup>. Constant memory is accessed with a <code>ld.const</code>​ instruction. Constant memory is restricted in size, currently limited to 64 KB<sup>(常量内存的大小限制，有64KB固定的)</sup> which can be used to hold statically-sized constant variables. There is an additional 640 KB of constant memory, organized as ten independent 64 KB regions<sup>(还有额外的640KB常量内存，被组织成了10个独立的64KB区域)</sup>. The driver may allocate and initialize constant buffers in these regions and pass pointers to the buffers as kernel function parameters<sup>(由驱动来分配和初始化这些区域中的常量内存，并将指向这些缓存的指针作为kernel的参数传递)</sup>. Since the ten regions are not contiguous, the driver must ensure that constant buffers are allocated so that each buffer fits entirely within a 64 KB region and does not span a region boundary.<sup>(由于这十个区域不连续，驱动必须确保常量缓冲的分配方式，使每个缓冲区完全适合在一个64KB区域内，并且不跨越区域边界)</sup></p>
+<p>Statically-sized constant variables have an optional variable initializer; constant variables with no explicit initializer are initialized to zero by default<sup>(没有显式初始化器的常量变量默认为初始化为零)</sup>. Constant buffers allocated by the driver are initialized by the host, and pointers to such buffers are passed to the kernel as parameters. See the description of kernel parameter attributes in <a class="link" href="https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#kernel-function-parameter-attributes"  target="_blank" rel="noopener"
+    >Kernel Function Parameter Attributes</a> for more details on passing pointers to constant buffers as kernel parameters.</p>
+<h4 id="131-banked-constant-state-spacedeprecated">1.3.1 Banked Constant State Space（deprecated）
+</h4><p>Previous versions of PTX exposed constant memory as a set of eleven 64 KB banks, with explicit bank numbers required for variable declaration and during access.</p>
+<p>Prior to PTX ISA version 2.2, the constant memory was organized into fixed size banks. There were eleven 64 KB banks, and banks were specified using the <code>.const[bank]</code>​ modifier, where <em>bank</em> ranged from 0 to 10. If no bank number was given, bank zero was assumed.</p>
+<p>By convention, bank zero was used for all statically-sized constant variables. The remaining banks were used to declare <em>incomplete</em> constant arrays (as in C, for example), where the size is not known at compile time. For example, the declaration</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="o">.</span><span class="n">extern</span> <span class="o">.</span><span class="k">const</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">.</span><span class="n">b32</span> <span class="n">const_buffer</span><span class="p">[];</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>resulted in <code>const_buffer</code>​ pointing to the start of constant bank two. This pointer could then be used to access the entire 64 KB constant bank. Multiple incomplete array variables declared in the same bank were aliased, with each pointing to the start address of the specified constant bank.</p>
+<p>To access data in contant banks 1 through 10, the bank number was required in the state space of the load instruction. For example, an incomplete array in bank 2 was accessed as follows:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="o">.</span><span class="n">extern</span> <span class="o">.</span><span class="k">const</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">.</span><span class="n">b32</span> <span class="n">const_buffer</span><span class="p">[];</span>
+</span></span><span class="line"><span class="cl"><span class="n">ld</span><span class="o">.</span><span class="k">const</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">b32</span>  <span class="o">%</span><span class="n">r1</span><span class="p">,</span> <span class="p">[</span><span class="n">const_buffer</span><span class="o">+</span><span class="mi">4</span><span class="p">];</span> <span class="o">//</span> <span class="nb">load</span> <span class="n">second</span> <span class="n">word</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>In PTX ISA version 2.2, we eliminated explicit banks and replaced the incomplete array representation of driver-allocated constant buffers with kernel parameter attributes that allow pointers to constant buffers to be passed as kernel parameters.</p>
+<p>‍</p>
+<h3 id="14-global-state-space">1.4 Global State Space
+</h3><p>The global (​.global​) state space is memory that is accessible by all threads in a context.<sup>(global state space是一块所有线程都可以访问的内存)</sup> It is the mechanism by which threads in different CTAs, clusters, and grids can communicate<sup>(是一种不同CTAs，不同clusters，不同grids都可以交流的机制)</sup>. Use <code>ld.global</code>​, <code>st.global</code>​, and <code>atom.global</code>​ to access global variables.</p>
+<p>Global variables have an optional variable initializer; global variables with no explicit initializer are initialized to zero by default.<sup>(典中典之默认初始化为零)</sup></p>
+<h3 id="15-local-state-space">1.5 Local State Space
+</h3><p>The local state space (<code>.local</code>​) is private memory for each thread to keep its own data. It is typically standard memory with cache<sup>(local state space是带有缓存的标准内存)</sup>. The size is limited, as it must be allocated on a per-thread basis<sup>(必须按照每个线程分配)</sup>. Use <code>ld.local</code>​ and <code>st.local</code>​ to access local variables.</p>
+<p>When compiling to use the <em>Application Binary Interface (ABI)</em> , .local​ state-space variables must be declared within function scope and are allocated on the stack<sup>(local state space必须分配到函数范围，并且必须在栈上分配内存)</sup>. In implementations that do not support a stack, all local memory variables are stored at fixed addresses, recursive function calls are not supported, and ​.local​ variables may be declared at module scope<sup>(在不支持栈的实现中，所有的局部内存变量存储在固定地址中，不支持递归函数调用，并且local变量可以在模块范围内声明)</sup>. When compiling legacy PTX code (ISA versions prior to 3.0) containing module-scoped <code>.local</code>​ variables, the compiler silently disables use of the ABI.</p>
+<h3 id="16-parameter-state-space">1.6 Parameter State Space
+</h3><p>The parameter (<code>.param</code>​) state space is used (1) to pass input arguments from the host to the kernel, (2a) to declare formal input and return parameters for device functions called from within kernel execution, and (2b) to declare locally-scoped byte array variables that serve as function call arguments, typically for passing large structures by value to a function. Kernel function parameters differ from device function parameters in terms of access and sharing (read-only versus read-write, per-kernel versus per-thread)<sup>(parameter对于kernel function（<strong>global</strong>）和device function（<strong>device</strong>）的访问类型和作用域是不一样的)</sup>. Note that PTX ISA versions 1.x supports only kernel function parameters in .param space<sup>(ptx 1.x版本只支持function parameters in .param space（不支持device function）)</sup>; device function parameters were previously restricted to the register state space. The use of parameter state space for device function parameters was introduced in PTX ISA version 2.0<sup>(parameter for device function 在PTX 2.x引入)</sup> and requires target architecture <code>sm_20</code>​ or higher. Additional sub-qualifiers ​::entry​ or ​::func​ can be specified on instructions with ​.param​ state space to indicate whether the address refers to kernel function parameter or device function parameter<sup>(可以在.param后面指定额外的子限定符::entry或::func，来指示地址是否引用内核函数或设备函数参数)</sup>. If no sub-qualifier is specified with the <code>.param</code>​ state space, then the default sub-qualifier is specific to and dependent on the exact instruction. For example, <code>st.param</code>​ is equivalent to <code>st.param::func</code>​ whereas <code>isspacep.param</code>​ is equivalent to <code>isspacep.param::entry</code>​. Refer to the instruction description for more details on default sub-qualifier assumption.</p>
+<blockquote>
+<p>Note<sup>(讲了一大堆，重心落在第一句和最后一句，说的是： “由于.param空间的位置是implementation specific，所以PTX code should no assumptions about the relative locations or ordering of .param space variables.”)</sup></p>
+<p>The location of parameter space is implementation specific. For example, in some implementations kernel parameters reside in global memory. No access protection is provided between parameter and global space in this case. Though the exact location of the kernel parameter space is implementation specific, the kernel parameter space window is always contained within the global space window. Similarly, function parameters are mapped to parameter passing registers and/or stack locations based on the function calling conventions of the <em>Application Binary Interface (ABI)</em> . Therefore, PTX code should make no assumptions about the relative locations or ordering of <code>.param</code>​ space variables.</p></blockquote>
+<h4 id="161-kernel-function-parameters">1.6.1 Kernel Function Parameters
+</h4><p>Each kernel function definition includes an optional list of parameters. These parameters are addressable, read-only variables declared in the <code>.param</code>​ state space. Values passed from the host to the kernel<sup>(值从host到kernel，用ld.param )</sup> are accessed through these parameter variables using <code>ld.param</code>​ instructions. The kernel parameter variables are shared across all CTAs from all clusters within a grid.<sup>(这么大范围的共享，我猜是global)</sup></p>
+<p>The address of a kernel parameter may be moved into a register using the ​mov​ instruction. The resulting address is in the ​.param​ state space and is accessed using ​ld.param<sup>(内核参数的地址可以用mov来移入寄存器，拿到的这个地址在.param状态空间中，可以通过ld.param来访问)</sup>​ instructions.<sup>(内核参数的地址可以用mov来移入寄存器，拿到的这个地址在.param状态空间中，可以通过ld.param来访问)</sup></p>
+<p><strong>Example<sup>(对于这个示例， .entry是一个directive，他用于表明此处是一个内核入口点 foo是函数名 .param是space state .b32表明参数是32位的（bit？binary？） .align是一个directive，属于Variables，后面跟一个可选的byte-count来指定对齐方式 到正文     .reg .u32 %n;     .reg .f64 %d; 意为声明一个32位无符号整数寄存器，取名叫做n，用%n引用 声明一个64位浮点数寄存器，取名叫做d，用%d引用 然后是     ld.param.u32 %n, [N];     ld.param.f64 %d, [buffer]; ld是一个instruction，（ld move data from addressable state space to registers.） 表示从param state space中分别ld一个u32和f64的数据)</sup></strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">.entry foo ( .param .b32 N, .param .align 8 .b8 buffer[64] )
+</span></span><span class="line"><span class="cl">{
+</span></span><span class="line"><span class="cl">    .reg .u32 %n;
+</span></span><span class="line"><span class="cl">    .reg .f64 %d;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    ld.param.u32 %n, [N];
+</span></span><span class="line"><span class="cl">    ld.param.f64 %d, [buffer];
+</span></span><span class="line"><span class="cl">    ...
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>Example<sup>(和前一个例子差不多 .entry表明函数入口 bar是函数名称 有一个b32的参数叫做len .reg .u32 %ptr,%n;声明了两个u32的寄存器分别叫做ptr和n mov（The mov instructions copies data between registers）mov指令在registers之间复制数据，但实际上这里是从state space到register，应该都可以吧 mov.u32      %ptr, len;将len的值复制到ptr寄存器中去 ld.param.u32 %n, [%ptr];就是从ptr加载一个u32到n中去)</sup></strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">.entry bar ( .param .b32 len )
+</span></span><span class="line"><span class="cl">{
+</span></span><span class="line"><span class="cl">    .reg .u32 %ptr, %n;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    mov.u32      %ptr, len;
+</span></span><span class="line"><span class="cl">    ld.param.u32 %n, [%ptr];
+</span></span><span class="line"><span class="cl">    ...
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Kernel function parameters <sup>(parameters既可以保留数据值也可以存const、global、local  or shared state space地址)</sup>may represent normal data values, or they may hold addresses to objects in constant, global, local, or shared state spaces. In the case of pointers, the compiler and runtime system need information about which parameters are pointers, and to which state space they point<sup>(如果parameters是指针的话，那么编译器和运行时系统就需要关于哪些参数是指针，并且这些指针指向哪些state space的信息。 存在提供这些信息的directive，具体的内容在Kernel Function Parameter Attributes里面看)</sup>. Kernel parameter attribute directives are used to provide this information at the PTX level. See <a class="link" href="https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#kernel-function-parameter-attributes"  target="_blank" rel="noopener"
+    >Kernel Function Parameter Attributes</a> for a description of kernel parameter attribute directives.</p>
+<blockquote>
+<p>Note<sup>(出现了一个新的instructino，cvta，预告一下，这个instruction在9.7.9.20)</sup></p>
+<p>The current implementation does not allow creation of generic pointers to constant variables (<code>cvta.const</code>​) in programs that have pointers to constant buffers passed as kernel parameters.</p></blockquote>
+<h4 id="162-kernel-function-parameter-attributes可以用ptr来表明该参数是指向内存的指针还可以指示该指针所指向内存的状态空间和对齐方式">1.6.2 Kernel Function Parameter Attributes<sup>(可以用.ptr来表明该参数是指向内存的指针，还可以指示该指针所指向内存的状态空间和对齐方式)</sup>
+</h4><p>Kernel function parameters may be declared with an optional .ptr attribute to indicate that a parameter is a pointer to memory, and also indicate the state space and alignment of the memory being pointed to. <a class="link" href="https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#kernel-parameter-attribute-ptr"  target="_blank" rel="noopener"
+    >Kernel Parameter Attribute: .ptr</a> describes the <code>.ptr</code>​ kernel parameter attribute.</p>
+<h4 id="163-kernel-parameter-attributeptr">1.6.3 Kernel Parameter Attribute：.ptr
+</h4><p><strong>.ptr</strong></p>
+<p>Kernel parameter alignment attribute.</p>
+<p><strong>Syntax<sup>(这里的.type就是u32之类的，这里的.space就是state space)</sup></strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="o">.</span><span class="n">param</span> <span class="o">.</span><span class="n">type</span> <span class="o">.</span><span class="n">ptr</span> <span class="o">.</span><span class="n">space</span> <span class="o">.</span><span class="n">align</span> <span class="n">N</span>  <span class="n">varname</span>
+</span></span><span class="line"><span class="cl"><span class="o">.</span><span class="n">param</span> <span class="o">.</span><span class="n">type</span> <span class="o">.</span><span class="n">ptr</span>        <span class="o">.</span><span class="n">align</span> <span class="n">N</span>  <span class="n">varname</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">.</span><span class="n">space</span> <span class="o">=</span> <span class="p">{</span> <span class="o">.</span><span class="k">const</span><span class="p">,</span> <span class="o">.</span><span class="n">global</span><span class="p">,</span> <span class="o">.</span><span class="n">local</span><span class="p">,</span> <span class="o">.</span><span class="n">shared</span> <span class="p">};</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><strong>Description</strong></p>
+<p>Used to specify the state space and, optionally, the alignment<sup>(alignment是可选的)</sup> of memory pointed to by a pointer type kernel parameter. The alignment value <em>N</em>, if present, must be a power of two. If no state space is specified, the pointer is assumed to be a generic address pointing to one of const, global, local, or shared memory<sup>(如果没有指向state space，那么这个指针就被假定为指向const、global、local or shared memory的通用地址)</sup>. If no alignment is specified, the memory pointed to is assumed to be aligned to a 4 byte boundary.<sup>(如果没有指定alignment，那么就默认对齐4byte)</sup></p>
+<p>Spaces between ​.ptr​, ​.space​, and ​.align​ may be eliminated to improve readability.<sup>(这之间的空格也可以消除)</sup>​</p>
+<p><strong>PTX ISA Notes</strong></p>
+<ul>
+<li>Introduced in PTX ISA version 2.2.</li>
+<li>Support for generic addressing of .const space added in PTX ISA version 3.1.</li>
+</ul>
+<p><strong>Target ISA Notes</strong></p>
+<ul>
+<li>Supported on all target architectures.</li>
+</ul>
+<p><strong>Examples<sup>(这个例子很清晰，是按照前面说的语法来的 )</sup></strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="o">.</span><span class="n">entry</span> <span class="n">foo</span> <span class="p">(</span> <span class="o">.</span><span class="n">param</span> <span class="o">.</span><span class="n">u32</span> <span class="n">param1</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">             <span class="o">.</span><span class="n">param</span> <span class="o">.</span><span class="n">u32</span> <span class="o">.</span><span class="n">ptr</span><span class="o">.</span><span class="n">global</span><span class="o">.</span><span class="n">align</span> <span class="mi">16</span> <span class="n">param2</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">             <span class="o">.</span><span class="n">param</span> <span class="o">.</span><span class="n">u32</span> <span class="o">.</span><span class="n">ptr</span><span class="o">.</span><span class="k">const</span><span class="o">.</span><span class="n">align</span> <span class="mi">8</span> <span class="n">param3</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">             <span class="o">.</span><span class="n">param</span> <span class="o">.</span><span class="n">u32</span> <span class="o">.</span><span class="n">ptr</span><span class="o">.</span><span class="n">align</span> <span class="mi">16</span> <span class="n">param4</span>  <span class="o">//</span> <span class="n">generic</span> <span class="n">address</span>
+</span></span><span class="line"><span class="cl">                                               <span class="o">//</span> <span class="n">pointer</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span> <span class="p">{</span> <span class="o">..</span> <span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="164-device-function-parameters">1.6.4 Device Function Parameters
+</h4><p>PTX ISA version 2.0 extended the use of parameter space to device function parameters<sup>(这一段有点复杂，总之就是在PTX ISA2中扩展了parameter空间对设备函数参数的使用)</sup>. The most common use is for passing objects by value that do not fit within a PTX register, such as C structures larger than 8 bytes. In this case, a byte array in parameter space is used. Typically, the caller will declare a locally-scoped <code>.param</code>​ byte array variable that represents a flattened C structure or union. This will be passed by value to a callee, which declares a <code>.param</code>​ formal parameter having the same size and alignment as the passed argument.</p>
+<p><strong>Example<sup>(有一点意外，这里参数.param .align 8 .b8 buffer[12]里面的 .8的意思是buffer[12]里面的数据是字节，即buffer是一个字节数组，如果将这里的.b8改成f64，则表明这个buffer是一个double数组，说明前面的理解是不到位的。 这一个示例对.type这样的ptx的说明很清晰 第一段是函数实现，这个函数的具体的内容 第二段是函数的调用：call foo,（4，mystruct）; 看第二段有一个包括了double和int的结构体，加在一起8+4=12字节，超过了8字节，如上述所说的使用，就需要用param空间了 前面遇到过ld，顺便看了一下st，st的意思是from register to memory 由于mystruct是由一个double和一个int组成的， 所以他这里是先将8字节大小的f64 dbl放入mystruct里面 然后偏移8字节再放入4字节大小的s32 x，在传入foo调用)</sup></strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="o">//</span> <span class="k">pass</span> <span class="n">object</span> <span class="n">of</span> <span class="n">type</span> <span class="n">struct</span> <span class="p">{</span> <span class="n">double</span> <span class="n">d</span><span class="p">;</span> <span class="ne">int</span> <span class="n">y</span><span class="p">;</span> <span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="o">.</span><span class="k">func</span> <span class="n">foo</span> <span class="p">(</span> <span class="o">.</span><span class="n">reg</span> <span class="o">.</span><span class="n">b32</span> <span class="n">N</span><span class="p">,</span> <span class="o">.</span><span class="n">param</span> <span class="o">.</span><span class="n">align</span> <span class="mi">8</span> <span class="o">.</span><span class="n">b8</span> <span class="n">buffer</span><span class="p">[</span><span class="mi">12</span><span class="p">]</span> <span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="o">.</span><span class="n">reg</span> <span class="o">.</span><span class="n">f64</span> <span class="o">%</span><span class="n">d</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">.</span><span class="n">reg</span> <span class="o">.</span><span class="n">s32</span> <span class="o">%</span><span class="n">y</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">ld</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">f64</span> <span class="o">%</span><span class="n">d</span><span class="p">,</span> <span class="p">[</span><span class="n">buffer</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ld</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">s32</span> <span class="o">%</span><span class="n">y</span><span class="p">,</span> <span class="p">[</span><span class="n">buffer</span><span class="o">+</span><span class="mi">8</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">    <span class="o">...</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">//</span> <span class="n">code</span> <span class="n">snippet</span> <span class="n">from</span> <span class="n">the</span> <span class="n">caller</span>
+</span></span><span class="line"><span class="cl"><span class="o">//</span> <span class="n">struct</span> <span class="p">{</span> <span class="n">double</span> <span class="n">d</span><span class="p">;</span> <span class="ne">int</span> <span class="n">y</span><span class="p">;</span> <span class="p">}</span> <span class="n">mystruct</span><span class="p">;</span> <span class="n">is</span> <span class="n">flattened</span><span class="p">,</span> <span class="n">passed</span> <span class="n">to</span> <span class="n">foo</span>
+</span></span><span class="line"><span class="cl">    <span class="o">...</span>
+</span></span><span class="line"><span class="cl">    <span class="o">.</span><span class="n">reg</span> <span class="o">.</span><span class="n">f64</span> <span class="n">dbl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">.</span><span class="n">reg</span> <span class="o">.</span><span class="n">s32</span> <span class="n">x</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">.</span><span class="n">param</span> <span class="o">.</span><span class="n">align</span> <span class="mi">8</span> <span class="o">.</span><span class="n">b8</span> <span class="n">mystruct</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">...</span>
+</span></span><span class="line"><span class="cl">    <span class="n">st</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">f64</span> <span class="p">[</span><span class="n">mystruct</span><span class="o">+</span><span class="mi">0</span><span class="p">],</span> <span class="n">dbl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">st</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">s32</span> <span class="p">[</span><span class="n">mystruct</span><span class="o">+</span><span class="mi">8</span><span class="p">],</span> <span class="n">x</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">call</span> <span class="n">foo</span><span class="p">,</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">mystruct</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">...</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>See the section on function call syntax for more details.</p>
+<p>Function input parameters may be read via <code>ld.param</code>​ and function return parameters may be written using <code>st.param</code>​; it is illegal to write to an input parameter or read from a return parameter.<sup>(没有具体示例，不是很懂这个非法场景)</sup></p>
+<p>Aside from passing structures by value, <code>.param</code>​ space is also required whenever a formal parameter has its address taken within the called function. In PTX, the address of a function input parameter may be moved into a register using the <code>mov</code>​ instruction. Note that the parameter will be copied to the stack if necessary, and so the address will be in the <code>.local</code>​ state space and is accessed via <code>ld.local</code>​ and <code>st.local</code>​ instructions. It is not possible to use <code>mov</code>​ to get the address of or a locally-scoped <code>.param</code>​ space variable. Starting PTX ISA version 6.0, it is possible to use <code>mov</code>​ instruction to get address of return parameter of device function.</p>
+<p><strong>Example<sup>(出现了一个新的instruction，在9.7.12.2里面被称为control flow instructions包括：{}、@、bra、call、ret、exit 应该就是跳转（branch）的意思 出现了一个新的type specifier（9.3），.pred，长的很像instruction，但是没在instruction列表里面找到他，作用应该只是用于表明此变量是谓词变量（比大小？布尔类型？） 出现了一个新的instruction，在9.7.6里面被称为comparison and selection instructions包括set、setp、selp、slct 他妈的看上去set和setp是一样的，damn 这里的eq是comparison operators在9.3.1comparison里面有描述 值得一提的是这个loop没有文档的描述（显然猜测为普通的循环） 这个例子中第一次出现了在声明寄存器变量的时候用.pred表明这个变量是谓词类型（据AI说这是bool类型） @%p bra         Done;这里的整个循环是如果%p为true则跳转到Done，即结束循环 这之前有一句setp.eq.u32  %p, %n, 0;会一直做n和0的判断，如果n等于0，则将p设置为true，即若n为0，则跳出循环，去Done 循环体里面有一个sub指令，表明每次循环n都会自减一次，所以这个循环还是很完整合理的。)</sup></strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="o">//</span> <span class="k">pass</span> <span class="n">array</span> <span class="n">of</span> <span class="n">up</span> <span class="n">to</span> <span class="n">eight</span> <span class="n">floating</span><span class="o">-</span><span class="n">point</span> <span class="n">values</span> <span class="ow">in</span> <span class="n">buffer</span>
+</span></span><span class="line"><span class="cl"><span class="o">.</span><span class="k">func</span> <span class="n">foo</span> <span class="p">(</span> <span class="o">.</span><span class="n">param</span> <span class="o">.</span><span class="n">b32</span> <span class="n">N</span><span class="p">,</span> <span class="o">.</span><span class="n">param</span> <span class="o">.</span><span class="n">b32</span> <span class="n">buffer</span><span class="p">[</span><span class="mi">32</span><span class="p">]</span> <span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="o">.</span><span class="n">reg</span> <span class="o">.</span><span class="n">u32</span>  <span class="o">%</span><span class="n">n</span><span class="p">,</span> <span class="o">%</span><span class="n">r</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">.</span><span class="n">reg</span> <span class="o">.</span><span class="n">f32</span>  <span class="o">%</span><span class="n">f</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">.</span><span class="n">reg</span> <span class="o">.</span><span class="n">pred</span> <span class="o">%</span><span class="n">p</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">ld</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">u32</span> <span class="o">%</span><span class="n">n</span><span class="p">,</span> <span class="p">[</span><span class="n">N</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">    <span class="n">mov</span><span class="o">.</span><span class="n">u32</span>      <span class="o">%</span><span class="n">r</span><span class="p">,</span> <span class="n">buffer</span><span class="p">;</span>  <span class="o">//</span> <span class="n">forces</span> <span class="n">buffer</span> <span class="n">to</span> <span class="o">.</span><span class="n">local</span> <span class="n">state</span> <span class="n">space</span>
+</span></span><span class="line"><span class="cl"><span class="n">Loop</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">setp</span><span class="o">.</span><span class="n">eq</span><span class="o">.</span><span class="n">u32</span>  <span class="o">%</span><span class="n">p</span><span class="p">,</span> <span class="o">%</span><span class="n">n</span><span class="p">,</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="err">@</span><span class="o">%</span><span class="n">p</span> <span class="n">bra</span>         <span class="n">Done</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ld</span><span class="o">.</span><span class="n">local</span><span class="o">.</span><span class="n">f32</span> <span class="o">%</span><span class="n">f</span><span class="p">,</span> <span class="p">[</span><span class="o">%</span><span class="n">r</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">    <span class="o">...</span>
+</span></span><span class="line"><span class="cl">    <span class="n">add</span><span class="o">.</span><span class="n">u32</span>      <span class="o">%</span><span class="n">r</span><span class="p">,</span> <span class="o">%</span><span class="n">r</span><span class="p">,</span> <span class="mi">4</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">sub</span><span class="o">.</span><span class="n">u32</span>      <span class="o">%</span><span class="n">n</span><span class="p">,</span> <span class="o">%</span><span class="n">n</span><span class="p">,</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">bra</span>          <span class="n">Loop</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">Done</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="o">...</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="17-shared-state-space">1.7 Shared State Space
+</h3><p>The shared (<code>.shared</code>​) state space is a memory that is owned by an executing CTA and is accessible to the threads of all the CTAs within a cluster<sup>(shared state space居然是accessible to the threads of all the CTAs within a cluster，但是我猜是只有CTA内部才能通信，虽然整个clusters可以访问)</sup>. An address in shared memory can be read and written by any thread in a CTA cluster.</p>
+<p>Additional sub-qualifiers<sup>(他这里表明在.shared 之后可以指定::cta或者::cluster来表明这个shared地址是属于正执行的CTA还是cluster中任何CTA的共享内存窗口。.shared::cta 窗口中的地址也包含在 .shared::cluster窗口中。如果没有指定则默认是::cta，例如：ld.shared 相当于 ld.shared::cta)</sup> <code>::cta</code>​ or <code>::cluster</code>​ can be specified on instructions with <code>.shared</code>​ state space to indicate whether the address belongs to the shared memory window of the executing CTA or of any CTA in the cluster respectively. The addresses in the <code>.shared::cta</code>​ window also fall within the <code>.shared::cluster</code>​ window. If no sub-qualifier is specified with the <code>.shared</code>​ state space, then it defaults to <code>::cta</code>​. For example, <code>ld.shared</code>​ is equivalent to <code>ld.shared::cta</code>​.</p>
+<p>Variables declared in ​.shared​ state space refer to the memory addresses in the current CTA. Instruction ​mapa​ gives the ​.shared::cluster<sup>(.shared指向当前CTA中的内存地址，mapa给出了在同一cluster里面其他CTA的地址)</sup>​ address of the corresponding variable in another CTA in the cluster.<sup>(.shared指向当前CTA中的内存地址，mapa给出了在同一cluster里面其他CTA的地址)</sup></p>
+<p>Shared memory typically has some optimizations to support the sharing. One example is broadcast<sup>(shared的优化方案例子——————广播)</sup>; where all threads read from the same address. Another is sequential access from sequential threads.</p>
+<h3 id="18-texture-state-spacedeprecated">1.8 Texture State Space（deprecated）
+</h3><p>The texture (<code>.tex</code>​) state space is global memory accessed via the texture instruction. It is shared by all threads in a context. Texture memory is read-only and cached, so accesses to texture memory are not coherent with global memory stores to the texture image.</p>
+<p>The GPU hardware has a fixed number of texture bindings that can be accessed within a single kernel (typically 128). The .tex directive will bind the named texture memory variable to a hardware texture identifier, where texture identifiers are allocated sequentially beginning with zero. Multiple names may be bound to the same physical texture identifier. An error is generated if the maximum number of physical resources is exceeded. The texture name must be of type <code>.u32</code>​ or <code>.u64</code>​.</p>
+<p>Physical texture resources are allocated on a per-kernel granularity, and <code>.tex</code>​ variables are required to be defined in the global scope.</p>
+<p>Texture memory is read-only. A texture’s base address is assumed to be aligned to a 16 byte boundary.</p>
+<p><strong>Example</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">.tex .u32 tex_a;         // bound to physical texture 0
+</span></span><span class="line"><span class="cl">.tex .u32 tex_c, tex_d;  // both bound to physical texture 1
+</span></span><span class="line"><span class="cl">.tex .u32 tex_d;         // bound to physical texture 2
+</span></span><span class="line"><span class="cl">.tex .u32 tex_f;         // bound to physical texture 3
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Note</p>
+<p>Explicit declarations of variables in the texture state space is deprecated, and programs should instead reference texture memory through variables of type <code>.texref</code>​. The <code>.tex</code>​ directive is retained for backward compatibility, and variables declared in the <code>.tex</code>​ state space are equivalent to module-scoped <code>.texref</code>​ variables in the <code>.global</code>​ state space.</p>
+<p>For example, a legacy PTX definitions such as</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">.tex .u32 tex_a;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>is equivalent to:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">.global .texref tex_a;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>See <a class="link" href="https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#texture-sampler-and-surface-types"  target="_blank" rel="noopener"
+    >Texture Sampler and Surface Types</a> for the description of the <code>.texref</code>​ type and <a class="link" href="https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#texture-instructions"  target="_blank" rel="noopener"
+    >Texture Instructions</a> for its use in texture instructions.</p>
+<h2 id="2-tpyes">2. Tpyes
+</h2><h3 id="21-fundamental-types">2.1 Fundamental Types
+</h3><p>In PTX, the fundamental types reflect the native data types supported by the target architectures. A fundamental type specifies both a basic type and a size<sup>(一个type由basic type和size组成)</sup>. Register variables are always of a fundamental type, and instructions operate on these types. The same type-size specifiers are used for both variable definitions and for typing instructions, so their names are intentionally short.<sup>(这里说了type specifiers到处都在用，所以设计的很短)</sup></p>
+<p><a class="link" href="https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#fundamental-types-fundamental-type-specifiers"  target="_blank" rel="noopener"
+    >Table 8</a> lists the fundamental type specifiers for each basic type:</p>
+<p>​<img src="http://127.0.0.1:3622/assets/image-20250220152438-qg4b3sq.png"
+	
+	
+	
+	loading="lazy"
+	
+		alt="image"
+	
+	
+>​</p>
+<p>Most instructions have one or more type specifiers, needed to fully specify instruction behavior. Operand types and sizes are checked against instruction types for compatibility.</p>
+<p>Two fundamental types are compatible if they have the same basic type and are the same size. Signed and unsigned integer types are compatible if they have the same size. The bit-size type is compatible with any fundamental type having the same size.</p>
+<p>In principle, all variables (aside from predicates) could be declared using only bit-size types<sup>(所有的变量（除了谓词以外）都可以仅使用位大小类型来声明)</sup>, but typed variables enhance program readability and allow for better operand type checking.</p>
+<h3 id="22-restricted-use-of-sub-word-sizes">2.2 Restricted Use of Sub-Word Sizes
+</h3><p>The ​.u8​, ​.s8​, and ​.b8​ instruction types are restricted to ​ld​, ​st​, and ​cvt​ instructions<sup>(u8、s8和b8仅限于ld、st和cvt使用)</sup>. The <code>.f16</code>​ floating-point type is allowed only in conversions to and from <code>.f32</code>​, <code>.f64</code>​ types, in half precision floating point instructions and texture fetch instructions. The <code>.f16x2</code>​ floating point type is allowed only in half precision floating point arithmetic instructions and texture fetch instructions.</p>
+<p>For convenience<sup>(为了方便，ld、st和cvt允许源和目的操作数比指令本身要求的类型大小要大)</sup>, <code>ld</code>​, <code>st</code>​, and <code>cvt</code>​ instructions permit source and destination data operands to be wider than the instruction-type size, so that narrow values may be loaded, stored, and converted using regular-width registers. For example, 8-bit or 16-bit values may be held directly in 32-bit or 64-bit registers when being loaded, stored, or converted to other types and sizes.</p>
+<h3 id="23-alternate-floating-point-data-formats">2.3 Alternate Floating-Point Data Formats
+</h3><p>The fundamental floating-point types supported in PTX have implicit bit representations<sup>(PTX支持的基本浮点类型具有隐式的位表示，指示用于存储指数和尾数的位数。例如f16隐式为e5m10)</sup> that indicate the number of bits used to store exponent and mantissa. For example, the <code>.f16</code>​ type indicates 5 bits reserved for exponent and 10 bits reserved for mantissa. In addition to the floating-point representations assumed by the fundamental types, PTX allows the following alternate floating-point data formats:</p>
+<p>​bf16<sup>(8e7m)</sup>​ <strong>data format</strong>:This data format is a 16-bit floating point format with 8 bits for exponent and 7 bits for mantissa. A register variable containing ​bf16​ data must be declared with ​.b16<sup>(包含bf16数据的寄存器变量必须使用.b16类型声明)</sup>​ type.<sup>(包含bf16数据的寄存器变量必须使用.b16类型声明)</sup></p>
+<p>​<code>e4m3</code>​ <strong>data format</strong>:This data format is an 8-bit floating point format with 4 bits for exponent and 3 bits for mantissa. The ​e4m3​ encoding does not support infinity and ​NaN​ values are limited to ​0x7f​ and ​0xff​. A register variable containing ​e4m3<sup>(e4m3不支持无限大，如果使用e4m3则0x7f和0xff就会导致NaN 包含e4m3的寄存器变量必须用位大小类型声明)</sup>​ value must be declared using bit-size type.<sup>(e4m3不支持无限大，如果使用e4m3则0x7f和0xff就会导致NaN 包含e4m3的寄存器变量必须用位大小类型声明)</sup></p>
+<p>​<code>e5m2</code>​ <strong>data format</strong>:This data format is an 8-bit floating point format with 5 bits for exponent and 2 bits for mantissa. A register variable containing ​e5m2<sup>(同样的，包含e5m2的寄存器必须用位大小类型声明)</sup>​ value must be declared using bit-size type.<sup>(同样的，包含e5m2的寄存器必须用位大小类型声明)</sup></p>
+<p>​<code>tf32</code>​ <strong>data format</strong>:This data format is a special 32-bit floating point format supported by the matrix multiply-and-accumulate instructions, with the same range as <code>.f32</code>​ and reduced precision (&gt;=10 bits). The internal layout of <code>tf32</code>​ format is implementation defined. PTX facilitates conversion from single precision ​.f32​ type to ​tf32​ format. A register variable containing ​tf32​ data must be declared with ​.b32<sup>(ptx支持从单精度f32到tf32的转换，包含tf32的寄存器变量必须使用b32类型声明)</sup>​ type.<sup>(ptx支持从单精度f32到tf32的转换，包含tf32的寄存器变量必须使用b32类型声明)</sup></p>
+<p>​<code>e2m1</code>​ <strong>data format</strong>:This data format is a 4-bit floating point format with 2 bits for exponent and 1 bit for mantissa. The ​e2m1​ encoding does not support infinity and ​NaN<sup>(e2m1也不支持无限大)</sup>​. e2m1​ values must be used in a packed format specified as ​e2m1x2​. A register variable containing two ​e2m1​ values must be declared with ​.b8<sup>(e2m1必须以指定的压缩格式e2m1x2使用，包含两个e2m1值的寄存器变量必须使用.b8类型声明)</sup>​ type.<sup>(e2m1必须以指定的压缩格式e2m1x2使用，包含两个e2m1值的寄存器变量必须使用.b8类型声明)</sup></p>
+<p>​<code>e2m3</code>​ <strong>data format</strong>:This data format is a 6-bit floating point format with 2 bits for exponent and 3 bits for mantissa. The ​e2m3​ encoding does not support infinity and ​NaN<sup>(e2m3不支持无限大和NaN)</sup>​. e2m3<sup>(e2m3必须用packed格式e2m3x2使用)</sup>​ values must be used in a packed format specified as <sup>(e2m3必须以指定的packed格式e2m3x2使用)</sup>​e2m3x2<sup>(e2m3必须用packed格式e2m3x2使用)</sup>​. A register variable containing two <code>e2m3</code>​ values must be declared with ​.b16​ type<sup>(e2m3必须声明为.b16类型，)</sup> where each <code>.b8</code>​ element has 6-bit floating point value and 2 MSB bits padded with zeros.</p>
+<p>​<code>e3m2</code>​ <strong>data format</strong>:This data format is a 6-bit floating point format with 3 bits for exponent and 2 bits for mantissa. The ​e3m2​ encoding does not support infinity and ​NaN<sup>(e3m2不支持无限大和NaN)</sup>. <code>e3m2</code>​ values must be used in a packed format specified as ​e3m2x2<sup>(e3m2必须以指定的打包格式e3m2x2使用)</sup>​. A register variable containing two <code>e3m2</code>​ values must be declared with ​.b16​ type <sup>(包含两个e3m2值的寄存器变量必须声明为.b16类型，其中每个.b8元素具有6为浮点数，并且高两位用0填充)</sup>where each <code>.b8</code>​ element has 6-bit floating point value and 2 MSB bits padded with zeros.</p>
+<p>​<code>ue8m0</code>​ <strong>data format</strong>:This data format is an 8-bit unsigned floating-point format with 8 bits for exponent and 0 bits for mantissa. The <code>ue8m0</code>​ encoding does not support infinity.<sup>(不支持无限大)</sup> NaN​ value is limited to ​0xff<sup>(NaN被限制为0xff)</sup>​. ue8m0​ values must be used in a packed format specified as ​ue8m0x2<sup>(ue8m0值必须以指定的打包格式ue8m0x2使用。包含连个ue8m0 的寄存器必须声明为.b16类型)</sup>​. A register variable containing two <code>ue8m0</code>​ values must be declared with <code>.b16</code>​ type.</p>
+<p>​<code>ue4m3</code>​ <strong>data format</strong>:This data format is a 7-bit unsigned floating-point format with 4 bits for exponent and 3 bits for mantissa. The <code>ue4m3</code>​ encoding does not support infinity<sup>(同样的不支持无限大)</sup>. NaN​ value is limited to ​0x7f<sup>(NaN被限制为0x7f)</sup>​. A register variable containing single <code>ue4m3</code>​ value must be declared with <code>.b8</code>​ type having MSB bit padded with zero.</p>
+<p>Alternate data formats cannot be used as fundamental types. They are supported as source or destination formats by certain instructions.<sup>(替代数据不能作为基本类型使用。它们仅在某些指令中作为源格式或目标格式支持)</sup></p>
+<p>​<img src="http://127.0.0.1:3622/assets/image-20250220155752-i63t9u0.png"
+	
+	
+	
+	loading="lazy"
+	
+		alt="image"
+	
+	
+>​</p>
+<h3 id="24-packed-data-types">2.4 Packed Data Types
+</h3><p>Certain PTX instructions operate on two or more sets of inputs in parallel, and produce two or more outputs<sup>(某些PTX指令并行处理两个或多个输入集，并生成两个或多个输出。此类指令可以使用以打包格式存储的数据。)</sup>. Such instructions can use the data stored in a packed format. PTX supports packing two or four values of the same scalar data type into a single, larger value<sup>(PTX支持将两个或四个相同标量数据类型的值打包成一个单一的、更大的值。)</sup>. The packed value is considered as a value of a <em>packed data type</em>. In this section we describe the packed data types supported in PTX.</p>
+<h4 id="241-packed-floating-point-data-types">2.4.1 Packed Floating Point Data Types
+</h4><p>PTX supports various variants of packed floating point data types<sup>(PTX支持许多packed 浮点数据类型，如下table9所示)</sup>. Out of them, only ​.f16x2​ is supported as a fundamental type<sup>(只有.f16x2被支持为基本类型)</sup>, while others cannot be used as fundamental types - they are supported as instruction types on certain instructions<sup>(不能作为基本类型的packed data types只能在某些指令中作为指令类型得到支持。)</sup>. When using an instruction with such non-fundamental types, the operand data variables must be of bit type of appropriate size. For example, all of the operand variables must be of type <code>.b32</code>​ for an instruction with instruction type as <code>.bf16x2</code>​. <a class="link" href="https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#operand-types-for-packed-floating-point-instruction-type"  target="_blank" rel="noopener"
+    >Table 9</a> described various variants of packed floating point data types in PTX.</p>
+<p>​<img src="http://127.0.0.1:3622/assets/image-20250222145300-kqdwcxg.png"
+	
+	
+	
+	loading="lazy"
+	
+		alt="image"
+	
+	
+>​</p>
+<h4 id="242-packed-integer-data-types">2.4.2 Packed Integer Data Types
+</h4><p>PTX supports two variants of packed integer data types: ​.u16x2​ and ​.s16x2<sup>(和浮点数不同，PTX只支持两种packed 整数数据类型：.u16x2和.s16x2)</sup>​. The packed data type consists of two <code>.u16</code>​ or <code>.s16</code>​ values. A register variable containing ​.u16x2​ or ​.s16x2​ data must be declared with ​.b32​ type<sup>(包含 .u16x2 或 .s16x2 数据的寄存器变量必须声明为 .b32 类型。打包整数数据类型不能作为基本类型使用。它们仅在某些指令中作为指令类型得到支持。)</sup>. Packed integer data types cannot be used as fundamental types. They are supported as instruction types on certain instructions.</p>
+<h2 id="3-texture-sampler-and-surface-types似乎与数值计算这个方向没有太大的关系暂且没看但是为了保持ptx学习的完整性还是cv了上去">3. Texture Sampler and Surface Types<sup>(似乎与数值计算这个方向没有太大的关系，暂且没看，但是为了保持PTX学习的完整性，还是CV了上去)</sup>
+</h2><p>PTX includes built-in ​<em>opaque</em>​ types<sup>(PTX有内置的不透明类型，用于定义纹理、采集器和表面描述符变量。)</sup> for defining texture, sampler, and surface descriptor variables. These types have named fields similar to structures, but all information about layout, field ordering, base address, and overall size is hidden to a PTX program, hence the term ​<em>opaque<sup>(但是所有不透明类型关于布局、字段顺序、基址和整体大小的信息对于PTX程序都是隐藏的，因此称为不透明类型。)</sup></em>. The use of these opaque types is limited to<sup>(使用这些不透明类型的范围仅限于)</sup>:</p>
+<ul>
+<li>Variable definition within global (module) scope and in kernel entry parameter lists.</li>
+<li>Static initialization of module-scope variables using comma-delimited static assignment expressions for the named members of the type.</li>
+<li>Referencing textures, samplers, or surfaces via texture and surface load/store instructions (<code>tex</code>​, <code>suld</code>​, <code>sust</code>​, <code>sured</code>​).</li>
+<li>Retrieving the value of a named member via query instructions (<code>txq</code>​, <code>suq</code>​).</li>
+<li>Creating pointers to opaque variables using <code>mov</code>​, e.g., <code>mov.u64 reg, opaque_var;</code>​. The resulting pointer may be stored to and loaded from memory, passed as a parameter to functions, and de-referenced by texture and surface load, store, and query instructions, but the pointer cannot otherwise be treated as an address, i.e., accessing the pointer with <code>ld</code>​ and <code>st</code>​ instructions, or performing pointer arithmetic will result in undefined results.</li>
+<li>Opaque variables may not appear in initializers, e.g., to initialize a pointer to an opaque variable.</li>
+</ul>
+<h3 id="31-texture-and-surface-properties">3.1 Texture and Surface Properties
+</h3><p>Fields <code>width</code>​, <code>height</code>​, and <code>depth</code>​ specify the size of the texture or surface in number of elements in each dimension.</p>
+<p>The <code>channel_data_type</code>​ and <code>channel_order</code>​ fields specify these properties of the texture or surface using enumeration types corresponding to the source language API. For example, see <a class="link" href="https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#channel-data-type-and-channel-order-fields"  target="_blank" rel="noopener"
+    >Channel Data Type and Channel Order Fields</a> for the OpenCL enumeration types currently supported in PTX.</p>
+<h3 id="32-sampler-properties">3.2 Sampler Properties
+</h3><p>The <code>normalized_coords</code>​ field indicates whether the texture or surface uses normalized coordinates in the range [0.0, 1.0) instead of unnormalized coordinates in the range [0, N). If no value is specified, the default is set by the runtime system based on the source language.</p>
+<p>The <code>filter_mode</code>​ field specifies how the values returned by texture reads are computed based on the input texture coordinates.</p>
+<p>The <code>addr_mode_{0,1,2}</code>​ fields define the addressing mode in each dimension, which determine how out-of-range coordinates are handled.</p>
+<p>See the <em>CUDA C++ Programming Guide</em> for more details of these properties.</p>
+<p>​<img src="http://127.0.0.1:3622/assets/image-20250222150628-2eakxgh.png"
+	
+	
+	
+	loading="lazy"
+	
+		alt="image"
+	
+	
+>​</p>
+<p>In independent texture mode, the sampler properties are carried in an independent <code>.samplerref</code>​ variable, and these fields are disabled in the <code>.texref</code>​ variables. One additional sampler property, <code>force_unnormalized_coords</code>​, is available in independent texture mode.</p>
+<p>The <code>force_unnormalized_coords</code>​ field is a property of <code>.samplerref</code>​ variables that allows the sampler to override the texture header <code>normalized_coords</code>​ property. This field is defined only in independent texture mode. When <code>True</code>​, the texture header setting is overridden and unnormalized coordinates are used; when <code>False</code>​, the texture header setting is used.</p>
+<p>The <code>force_unnormalized_coords</code>​ property is used in compiling OpenCL; in OpenCL, the property of normalized coordinates is carried in sampler headers. To compile OpenCL to PTX, texture headers are always initialized with <code>normalized_coords</code>​ set to True, and the OpenCL sampler-based <code>normalized_coords</code>​ flag maps (negated) to the PTX-level <code>force_unnormalized_coords</code>​ flag.</p>
+<p>Variables using these types may be declared at module scope or within kernel entry parameter lists. At module scope, these variables must be in the <code>.global</code>​ state space. As kernel parameters, these variables are declared in the <code>.param</code>​ state space.</p>
+<p><strong>Example</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">.global .texref     my_texture_name;
+</span></span><span class="line"><span class="cl">.global .samplerref my_sampler_name;
+</span></span><span class="line"><span class="cl">.global .surfref    my_surface_name;
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>When declared at module scope, the types may be initialized using a list of static expressions assigning values to the named members.</p>
+<p><strong>Example</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">.global .texref tex1;
+</span></span><span class="line"><span class="cl">.global .samplerref tsamp1 = { addr_mode_0 = clamp_to_border,
+</span></span><span class="line"><span class="cl">                               filter_mode = nearest
+</span></span><span class="line"><span class="cl">                             };
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="33-channel-data-type-and-channel-order-fields">3.3 Channel Data Type and Channel Order Fields
+</h3><p>The <code>channel_data_type</code>​ and <code>channel_order</code>​ fields have enumeration types corresponding to the source language API. Currently, OpenCL is the only source language that defines these fields. <a class="link" href="https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#channel-data-type-and-channel-order-fields-opencl-channel-order-definition"  target="_blank" rel="noopener"
+    >Table 13</a> and <a class="link" href="https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#channel-data-type-and-channel-order-fields-opencl-channel-data-type-definition"  target="_blank" rel="noopener"
+    >Table 12</a> show the enumeration values defined in OpenCL version 1.0 for channel data type and channel order.</p>
+<p>​<img src="http://127.0.0.1:3622/assets/image-20250222150727-75ijm2w.png"
+	
+	
+	
+	loading="lazy"
+	
+		alt="image"
+	
+	
+>​</p>
+<p>​<img src="http://127.0.0.1:3622/assets/image-20250222150740-az3tjv4.png"
+	
+	
+	
+	loading="lazy"
+	
+		alt="image"
+	
+	
+>​</p>
+<h2 id="4-variables">4. Variables
+</h2><p>In PTX, a variable declaration describes both the variable’s type and its state space<sup>(PTX中的一个变量声明同时描述了变量的类型和其状态空间。)</sup>. In addition to fundamental types, PTX supports types for simple aggregate objects such as vectors and arrays<sup>(除了基本类型，PTX还支持用于简单聚合对象的类型，如向量和数组)</sup></p>
+<h3 id="41-variable-declarations">4.1 Variable Declarations
+</h3><p>All storage for data is specified with variable declarations. Every variable must reside in one of the state spaces<sup>(每一个变量都必须驻留在一个state space之中)</sup> enumerated in the previous section.</p>
+<p>A variable declaration names the space in which the variable resides, its type and size, its name, an optional array size, an optional initializer, and an optional fixed address for the variable<sup>(变量声明指定了变量所在的空间、类型和大小、名称（前面这些是必须的） 以下是可选的 可选的数组大小、可选的初始化器以及变量的可选固定地址。)</sup>.</p>
+<p>Predicate variables may only be declared in the register state space<sup>(谓词变量只能在寄存器state space中声明)</sup>.</p>
+<p><strong>Examples</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="o">.</span><span class="n">global</span> <span class="o">.</span><span class="n">u32</span> <span class="n">loc</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="o">.</span><span class="n">reg</span>    <span class="o">.</span><span class="n">s32</span> <span class="n">i</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="o">.</span><span class="k">const</span>  <span class="o">.</span><span class="n">f32</span> <span class="n">bias</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="o">.</span><span class="n">global</span> <span class="o">.</span><span class="n">u8</span>  <span class="n">bg</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="o">.</span><span class="n">reg</span>    <span class="o">.</span><span class="n">v4</span> <span class="o">.</span><span class="n">f32</span> <span class="n">accel</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="o">.</span><span class="n">reg</span>    <span class="o">.</span><span class="n">pred</span> <span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">r</span><span class="p">;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="42-vectors">4.2 Vectors
+</h3><p>Limited-length vector types are supported. Vectors of length 2 and 4 of any non-predicate fundamental type can be declared by prefixing the type with .v2​ or ​.v4<sup>(向量的两种，两个元素或者4个元素)</sup>​. Vectors must be based on a fundamental type, and they may reside in the register space. Vectors cannot exceed 128-bits in length; for example, .v4 .f64<sup>(.v4.f64的意思是四个f64的意思，那么4个f64的总长度就是4*8=32字节（256位）。而PTX要求向量的长度不能超过128位，即16字节)</sup>​ is not allowed. Three-element vectors may be handled by using a ​.v4​ vector<sup>(三个元素的向量也要用.v4来处理，其中第四个元素提供填充)</sup>, where the fourth element provides padding. This is a common case for three-dimensional grids, textures, etc.</p>
+<p><strong>Examples</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">.global .v4 .f32 V;   // a length-4 vector of floats
+</span></span><span class="line"><span class="cl">.shared .v2 .u16 uv;  // a length-2 vector of unsigned ints
+</span></span><span class="line"><span class="cl">.global .v4 .b8  v;   // a length-4 vector of bytes
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>By default, vector variables are aligned to a multiple of their overall size​ (vector length times base-type size)<sup>(默认情况下，向量变量按照其整体大小的倍数对齐（向量长度乘以基类型大小）)</sup>, to enable vector load and store instructions<sup>(有一些需要如此对齐的load 和store指令)</sup> which require addresses aligned to a multiple of the access size.</p>
+<h3 id="43-array-declarations">4.3 Array Declarations
+</h3><p>Array declarations are provided to allow the programmer to reserve space<sup>(数组声明被程序员用于预留空间)</sup>. To declare an array, the variable name is followed with dimensional declarations<sup>(变量名之后要跟维度声明，和C类似)</sup> similar to fixed-size array declarations in C. The size of each dimension is a constant expression.<sup>(每个维度的大小都是一个常量表达式)</sup></p>
+<p><strong>Examples</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">.local  .u16 kernel[19][19];
+</span></span><span class="line"><span class="cl">.shared .u8  mailbox[128];
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>The size of the array specifies how many elements should be reserved<sup>(数组的大小指定了应预留多少个元素。)</sup>. For the declaration of array ​<em>kernel</em>​ above, 19<em>19 = 361 halfwords are reserved<sup>(在上面的kernel数组声明中，预留了19</em>19=361 half（.u16）)</sup>, for a total of 722 bytes.</p>
+<p>When declared with an initializer, the first dimension of the array may be omitted. The size of the first array dimension is determined by the number of elements in the array initializer.<sup>(当数组声明带有初始化器时，可以省略数组的第一个维度。 就像.global .s32 offset[][2] = { {-1, 0}, {0, -1}, {1, 0}, {0, 1} }; 他这里的声明就省略了第一个维度，只给出了第二个维度2. 此时第一个维度的大小由数组初始化器中的元素个数决定)</sup></p>
+<p><strong>Examples</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">.global .u32 index[] = { 0, 1, 2, 3, 4, 5, 6, 7 };
+</span></span><span class="line"><span class="cl">.global .s32 offset[][2] = { {-1, 0}, {0, -1}, {1, 0}, {0, 1} };
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Array ​<em>index</em>​ has eight elements, and array ​*offset<sup>(这句话只是对上面例子的一个简单的描述)</sup>*​ is a 4x2 array.<sup>(这句话只是对上面例子的一个简单的描述)</sup></p>
+<h3 id="44-initializers">4.4 Initializers
+</h3><p>Declared variables may specify an initial value using a syntax similar to C/C++, where the variable name is followed by an equals sign and the initial value or values for the variable. A scalar takes a single value, while vectors and arrays take nested lists of values inside of curly braces (the nesting matches the dimensionality of the declaration).</p>
+<p>As in C, array initializers may be incomplete, i.e., the number of initializer elements may be less than the extent of the corresponding array dimension, with remaining array locations initialized to the default value for the specified array type<sup>(和C语言一样，数组初始化器可以是未完成的，即， 初始化元素的数量可能少于相应数组维度的大小 剩余的数组位置将被初始化为指定数组类型的默认值)</sup>.</p>
+<p><strong>Examples</strong></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="o">.</span><span class="k">const</span>  <span class="o">.</span><span class="n">f32</span> <span class="n">vals</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="mf">0.33</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.125</span> <span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="o">.</span><span class="n">global</span> <span class="o">.</span><span class="n">s32</span> <span class="n">x</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">},</span> <span class="p">{</span><span class="mi">3</span><span class="p">}</span> <span class="p">};</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>is equivalent to</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="o">.</span><span class="k">const</span>  <span class="o">.</span><span class="n">f32</span> <span class="n">vals</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="mf">0.33</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.125</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span> <span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="o">.</span><span class="n">global</span> <span class="o">.</span><span class="n">s32</span> <span class="n">x</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">},</span> <span class="p">{</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">},</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">}</span> <span class="p">};</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Currently, variable initialization is supported only for constant and global state spaces. Variables in constant and global state spaces with no explicit initializer are initialized to zero by default. Initializers are not allowed in external variable declarations.</p>
+<p>Variable names appearing in initializers represent the address of the variable; this can be used to statically initialize a pointer to a variable. Initializers may also contain <em>var+offset</em> expressions, where <em>offset</em> is a byte offset added to the address of <em>var</em>. Only variables in <code>.global</code>​ or <code>.const</code>​ state spaces may be used in initializers. By default, the resulting address is the offset in the variable’s state space (as is the case when taking the address of a variable with a <code>mov</code>​ instruction). An operator, <code>generic()</code>​, is provided to create a generic address for variables used in initializers.</p>
+<p>Starting PTX ISA version 7.1, an operator <code>mask()</code>​ is provided, where <code>mask</code>​ is an integer immediate. The only allowed expressions in the <code>mask()</code>​ operator are integer constant expression and symbol expression representing address of variable. The <code>mask()</code>​ operator extracts <code>n</code>​ consecutive bits from the expression used in initializers and inserts these bits at the lowest position of the initialized variable. The number <code>n</code>​ and the starting position of the bits to be extracted is specified by the integer immediate <code>mask</code>​. PTX ISA version 7.1 only supports extracting a single byte starting at byte boundary from the address of the variable. PTX ISA version 7.3 supports Integer constant expression as an operand in the <code>mask()</code>​ operator.</p>
+<p>Supported values for <code>mask</code>​ are: 0xFF, 0xFF00, 0XFF0000, 0xFF000000, 0xFF00000000, 0xFF0000000000, 0xFF000000000000, 0xFF00000000000000.</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/cuda/">CUDA</a>
+        
+            <a href="/tags/ptx/">PTX</a>
+        
+            <a href="/tags/%E6%B1%87%E7%BC%96/">汇编</a>
+        
+    </section>
+
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    <section class="article-lastmod">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+        <span>
+            最后更新于 Feb 23, 2025 20:00 &#43;0800
+        </span>
+    </section></footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI&#43;WdtXRGWt2kTvGFasHpSy3SV"crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG&#43;vnGctmUb0ZY0l8"crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"integrity="sha384-&#43;VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4&#43;/RRE05"crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+	const mainArticleElement = document.querySelector(".main-article");
+        renderMathInElement(mainArticleElement, {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ],
+            ignoredClasses: ["gist"]
+        });})
+</script>
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "hugo-theme-stack" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (typeof DISQUS == 'object') {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2001 - 
+        
+        2025 Alfred Ben
+    </section>
+    
+    <section class="powerby">
+        
+            韧性不是懒惰，是坚持 <br/>
+        使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
