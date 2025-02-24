@@ -768,5 +768,23 @@
     }());
 </script>
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css">
+<script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script>
+
+<div id="aplayer"></div>
+
+<script>
+const home = "https://cben484.github.io/" ;
+console.log(home);
+const ap = new APlayer({
+    container: document.getElementById('aplayer'),
+    audio: [{
+        name: '安静',
+        artist: '周杰伦',
+        url: home + 'music/安静-周杰伦/安静.flac',
+        cover: home + 'music/安静-周杰伦/范特西.jpg'
+    }]
+});
+</script>
     </body>
 </html>
