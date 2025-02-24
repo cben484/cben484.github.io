@@ -3,7 +3,7 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://cben484.github.io/</loc>
-    <lastmod>2025-02-23T20:04:45+08:00</lastmod>
+    <lastmod>2025-02-24T14:48:28+08:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
@@ -21,7 +21,7 @@
                 />
   </url><url>
     <loc>https://cben484.github.io/post/</loc>
-    <lastmod>2025-02-23T20:04:45+08:00</lastmod>
+    <lastmod>2025-02-24T14:48:28+08:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
@@ -55,6 +55,36 @@
   </url><url>
     <loc>https://cben484.github.io/post/tips-z1wp3rc.html</loc>
     <lastmod>2025-02-23T18:56:19+08:00</lastmod>
+  </url><url>
+    <loc>https://cben484.github.io/tags/cuda/</loc>
+    <lastmod>2025-02-24T14:48:28+08:00</lastmod>
+  </url><url>
+    <loc>https://cben484.github.io/tags/ptx/</loc>
+    <lastmod>2025-02-24T14:48:28+08:00</lastmod>
+  </url><url>
+    <loc>https://cben484.github.io/post/ptx-parallel-thread-execution-ze0wof.html</loc>
+    <lastmod>2025-02-24T14:48:28+08:00</lastmod>
+  </url><url>
+    <loc>https://cben484.github.io/tags/</loc>
+    <lastmod>2025-02-24T14:48:28+08:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://cben484.github.io/en/tags/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="ar"
+                href="https://cben484.github.io/ar/tags/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh-cn"
+                href="https://cben484.github.io/tags/"
+                />
+  </url><url>
+    <loc>https://cben484.github.io/tags/%E6%B1%87%E7%BC%96/</loc>
+    <lastmod>2025-02-24T14:48:28+08:00</lastmod>
   </url><url>
     <loc>https://cben484.github.io/categories/</loc>
     <lastmod>2020-09-09T00:00:00+00:00</lastmod>
@@ -133,24 +163,6 @@
   </url><url>
     <loc>https://cben484.github.io/categories/syntax/</loc>
     <lastmod>2019-03-11T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://cben484.github.io/tags/</loc>
-    <lastmod>2019-03-11T00:00:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://cben484.github.io/en/tags/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="ar"
-                href="https://cben484.github.io/ar/tags/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="zh-cn"
-                href="https://cben484.github.io/tags/"
-                />
   </url><url>
     <loc>https://cben484.github.io/tags/themes/</loc>
     <lastmod>2019-03-11T00:00:00+00:00</lastmod>
